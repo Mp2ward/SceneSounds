@@ -468,7 +468,7 @@
 
     <!-- Beta password -->
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Beta Access Code</p>
+      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Access Code</p>
       <input id="pwInput" type="password" placeholder="Access code"
         onkeydown="if(event.key==='Enter')checkPassword()"
         style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:11px 16px;margin-bottom:10px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;text-align:center;letter-spacing:0.15em;"
@@ -577,7 +577,7 @@ async function doForgotPassword() {
 function checkPassword() {
   const input = document.getElementById('pwInput').value;
   const error = document.getElementById('pwError');
-  if (['EssexACF', 'ArmyCadets', 'Rescue2', 'Fraser=Prick', 'Demo'].includes(input)) {
+  if (['S3G', 'TRI', 'Babcock123'].includes(input)) {
     currentPlan = 'pro'; // Beta users get full access
     sessionStorage.setItem('ss_auth', '1');
     hideAuthScreen();
