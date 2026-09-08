@@ -483,16 +483,12 @@
   </div>
 </div>
 
-<!-- PRO UPGRADE BANNER (shown to free users) -->
+<!-- FREE PLAN STRIP — shown to free users only -->
 <div id="upgradeBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;
-  background:linear-gradient(135deg,#1a1208,#2a1f10);
-  border-top:1px solid rgba(255,107,53,0.3);
-  padding:12px 20px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-  <div>
-    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);">Free Plan</span>
-    <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">6 sounds per category · 2 scenarios</span>
-  </div>
-  <a href="https://scenesounds.app/upgrade" style="background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.1em;padding:8px 20px;border-radius:20px;text-decoration:none;white-space:nowrap;">Upgrade to Pro — £4.99/month</a>
+  background:#0a0c0f;border-top:1px solid rgba(255,107,53,0.25);
+  padding:10px 20px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);">Free Plan &nbsp;·&nbsp; 6 sounds per category &nbsp;·&nbsp; 2 scenarios</span>
+  <a href="https://scenesounds.app/upgrade" style="background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.78rem;letter-spacing:0.1em;padding:7px 18px;border-radius:6px;text-decoration:none;white-space:nowrap;text-transform:uppercase;">Upgrade — £4.99/mo</a>
 </div>
 
 <script>
@@ -599,9 +595,14 @@ const FREE_SCENARIO_LIMIT = 2;
 function applyAccessControl() {
   if (currentPlan === 'pro') return; // Full access
 
-  // Show upgrade banner
+  // Show upgrade banner and Try Pro button
   const banner = document.getElementById('upgradeBanner');
   banner.style.display = 'flex';
+  // Lock the scenario builder
+  const builder = document.getElementById('scenario-builder');
+  const builderLocked = document.getElementById('scenario-builder-locked');
+  if (builder) builder.style.display = 'none';
+  if (builderLocked) builderLocked.style.display = 'block';
 
   // Lock sounds beyond first 6 per category
   const cats = ['general','medical','fire','police','military','clinical'];
@@ -646,9 +647,7 @@ function lockScenarioCard(card) {
 }
 
 function showUpgradePrompt() {
-  if (confirm('Upgrade to Pro for £4.99/month to unlock all sounds and scenarios.')) {
-    window.open('https://scenesounds.app/upgrade', '_blank');
-  }
+  showPricingModal();
 }
 
 // ── HIDE AUTH SCREEN & BOOT APP ─────────────────────────────────────
@@ -658,8 +657,11 @@ function hideAuthScreen() {
   screen.style.transition = 'opacity 0.4s';
   setTimeout(() => {
     screen.style.display = 'none';
-    // Apply access control after grids are built
     setTimeout(applyAccessControl, 300);
+    // Show pricing modal after 4 seconds for free users
+    if (currentPlan === 'free') {
+      setTimeout(showPricingModal, 4000);
+    }
   }, 400);
 }
 
@@ -675,6 +677,85 @@ if (sessionStorage.getItem('ss_auth') === '1') {
   window.addEventListener('load', () => {
     setTimeout(initAuth, 800);
   });
+}
+</script>
+
+<!-- PRICING POPUP — shown after 4 seconds to free users -->
+<div id="pricingModal" style="display:none;position:fixed;inset:0;z-index:8000;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(4px);
+  align-items:center;justify-content:center;padding:24px;">
+  <div style="background:#111418;border:1px solid rgba(255,107,53,0.3);border-radius:16px;
+    max-width:420px;width:100%;padding:32px;position:relative;
+    box-shadow:0 24px 64px rgba(0,0,0,0.8);">
+
+    <!-- Close -->
+    <button onclick="closePricingModal()" style="position:absolute;top:14px;right:14px;
+      background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;
+      line-height:1;padding:4px 8px;">✕</button>
+
+    <!-- Header -->
+    <div style="margin-bottom:24px;">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.2em;
+        text-transform:uppercase;color:var(--orange);margin-bottom:8px;">Scene Sounds</p>
+      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;
+        color:var(--text);line-height:1.1;margin-bottom:8px;">Unlock the full library</h2>
+      <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;">You're on the free plan. Upgrade to access all sounds, scenarios and the custom builder.</p>
+    </div>
+
+    <!-- Plans -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
+
+      <!-- Free -->
+      <div style="background:#0a0c0f;border:1px solid var(--border);border-radius:10px;padding:16px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;letter-spacing:0.18em;
+          text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Free</p>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;
+          color:var(--text);line-height:1;margin-bottom:10px;">£0</p>
+        <p style="font-size:0.78rem;color:var(--muted);line-height:1.5;">6 sounds per category<br>2 scenarios</p>
+      </div>
+
+      <!-- Pro -->
+      <div style="background:#1a1208;border:1px solid rgba(255,107,53,0.4);border-radius:10px;padding:16px;position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);border-radius:10px 10px 0 0;"></div>
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.65rem;letter-spacing:0.18em;
+          text-transform:uppercase;color:var(--orange);margin-bottom:8px;">Pro</p>
+        <div style="display:flex;align-items:flex-end;gap:4px;margin-bottom:10px;">
+          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.8rem;
+            color:var(--text);line-height:1;">£4.99</p>
+          <p style="font-size:0.75rem;color:var(--muted);padding-bottom:4px;">/mo</p>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text);line-height:1.5;">All 85+ sounds<br>All 11 scenarios<br>Custom builder</p>
+      </div>
+    </div>
+
+    <!-- Enterprise note -->
+    <p style="font-size:0.78rem;color:var(--muted);text-align:center;margin-bottom:20px;">
+      Need a licence for your whole organisation? <a href="mailto:info@scenesounds.app" style="color:var(--orange);text-decoration:none;">Get in touch</a>
+    </p>
+
+    <!-- CTA -->
+    <a href="https://scenesounds.app/upgrade" target="_blank" style="display:block;text-align:center;
+      background:var(--orange);color:#0a0c0f;padding:13px;border-radius:8px;
+      font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.95rem;
+      letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;margin-bottom:10px;">
+      Upgrade to Pro
+    </a>
+    <button onclick="closePricingModal()" style="display:block;width:100%;background:none;border:none;
+      color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;
+      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:6px;">
+      Continue with free
+    </button>
+  </div>
+</div>
+
+<script>
+function closePricingModal() {
+  document.getElementById('pricingModal').style.display = 'none';
+}
+function showPricingModal() {
+  if (currentPlan !== 'free') return; // Only show to free users
+  const modal = document.getElementById('pricingModal');
+  modal.style.display = 'flex';
 }
 </script>
 
@@ -697,18 +778,31 @@ if (sessionStorage.getItem('ss_auth') === '1') {
   <div class="status-bar" id="statusBar">
     <span class="dot"></span>STANDBY
   </div>
-  <a href="mailto:info@scenesounds.app" style="
-    background:none;border:1px solid var(--border);color:var(--muted);
-    padding:6px 12px;border-radius:6px;
-    font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-    letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
-    text-decoration:none;display:flex;align-items:center;gap:5px;
-    transition:all 0.2s;flex-shrink:0;
-  " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
-     onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
-    ✉ Contact
-  </a>
+  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <!-- Try Pro button — only shown to free users -->
+
+    <!-- Log Out -->
+    <a href="mailto:info@scenesounds.app" style="
+      background:none;border:1px solid var(--border);color:var(--muted);
+      padding:6px 14px;border-radius:6px;
+      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
+      letter-spacing:0.1em;text-transform:uppercase;
+      text-decoration:none;flex-shrink:0;
+      transition:all 0.2s;
+    " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
+       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Contact</a>
+    <button onclick="doLogout()" style="
+      background:none;border:1px solid var(--border);color:var(--muted);
+      padding:6px 14px;border-radius:6px;
+      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
+      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+      flex-shrink:0;transition:all 0.2s;
+    " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
+       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Log Out</button>
+  </div>
 </header>
+
+
 
 <!-- Tab navigation -->
 <div class="tabs">
@@ -839,7 +933,15 @@ if (sessionStorage.getItem('ss_auth') === '1') {
     <div id="no-custom-msg" style="color:var(--muted);font-size:0.8rem;padding:12px 4px;letter-spacing:0.04em;">No saved scenarios yet — build one below.</div>
   </div>
 
-  <!-- Builder -->
+  <!-- Builder — Pro only -->
+  <div id="scenario-builder-locked" style="display:none;background:var(--surface);border:1px solid rgba(180,138,255,0.2);border-radius:14px;padding:28px 20px;margin-bottom:32px;text-align:center;">
+    <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#b48aff;margin-bottom:8px;">MAKE YOUR OWN</div>
+    <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own custom scenarios.<br>Available on Pro.</p>
+    <button onclick="showPricingModal()" style="background:var(--fire);color:#0a0c0f;border:none;border-radius:7px;padding:11px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £4.99/mo</button>
+  </div>
+
+  <!-- Builder — shown to Pro users -->
   <div id="scenario-builder" style="
     background:var(--surface);
     border:1px solid #b48aff44;
@@ -1975,26 +2077,23 @@ renderCustomScenarios();
 <div style="
   background:#07090c;
   border-top:1px solid var(--border);
-  padding:14px 20px;
-  text-align:center;
+  padding:16px 24px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
   font-family:'Barlow Condensed',sans-serif;
   font-size:0.68rem;
   letter-spacing:0.08em;
   color:var(--muted);
   text-transform:uppercase;
 ">
-  <a href="https://scenesounds.app" style="color:var(--muted);text-decoration:none;">SceneSounds.app</a>
-  &nbsp;|&nbsp;
-  Sector 3 Group Ltd
-  &nbsp;|&nbsp;
-  <a href="/terms.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
-     onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Terms</a>
-  &nbsp;|&nbsp;
-  <a href="/privacy.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
-     onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Privacy</a>
-  &nbsp;|&nbsp;
-  <a href="#" onclick="doLogout()" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
-     onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Log Out</a>
+  <span>SceneSounds.app &nbsp;·&nbsp; Sector 3 Group Ltd</span>
+  <div style="display:flex;gap:20px;align-items:center;">
+    <a href="/terms.html" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--fire)'" onmouseout="this.style.color='var(--muted)'">Terms</a>
+    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--fire)'" onmouseout="this.style.color='var(--muted)'">Privacy</a>
+  </div>
 </div>
 
 <script>
