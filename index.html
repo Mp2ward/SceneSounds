@@ -386,17 +386,18 @@
 </head>
 <body>
 
-<!-- PASSWORD SCREEN -->
-<div id="passwordScreen" style="
+<!-- Memberstack -->
+<script data-memberstack-app="app_cmtt1sudl006y0stu6l1h8b1l" src="https://static.memberstack.com/scripts/v2/memberstack.js" type="text/javascript"></script>
+
+<!-- AUTH SCREEN -->
+<div id="authScreen" style="
   position:fixed;inset:0;z-index:9999;
   background:var(--bg);
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   padding:32px;
 ">
-  <!-- Grid background -->
   <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,107,53,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,53,0.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;"></div>
-  <!-- Glow -->
   <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;"></div>
 
   <div style="position:relative;z-index:2;text-align:center;width:100%;max-width:340px;">
@@ -416,118 +417,263 @@
       </div>
     </div>
 
-    <!-- Password box -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px 24px;">
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Enter Access Code</p>
-
-      <input
-        id="pwInput"
-        type="password"
-        placeholder="Password"
-        autocomplete="off"
-        onkeydown="if(event.key==='Enter')checkPassword()"
-        style="
-          width:100%;background:#0a0c0f;
-          border:1px solid var(--border);border-radius:8px;
-          padding:13px 16px;margin-bottom:16px;
-          font-family:'Barlow',sans-serif;font-size:1rem;
-          color:var(--text);outline:none;
-          transition:border-color 0.2s;text-align:center;
-          letter-spacing:0.15em;
-        "
-        onfocus="this.style.borderColor='var(--fire)'"
-        onblur="this.style.borderColor='var(--border)'"
-      >
-
-      <!-- Terms & Conditions checkbox -->
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;text-align:left;">
-        <input
-          type="checkbox"
-          id="tcBox"
-          style="
-            width:18px;height:18px;flex-shrink:0;margin-top:1px;
-            accent-color:var(--fire);cursor:pointer;
-          "
-        >
-        <label for="tcBox" style="
-          font-family:'Barlow',sans-serif;font-size:0.78rem;
-          color:var(--muted);line-height:1.5;cursor:pointer;
-        ">
-          I agree to the
-          <a href="https://scenesounds.com/terms.html" target="_blank"
-             style="color:var(--fire);text-decoration:none;">Terms of Use</a>
-          and
-          <a href="https://scenesounds.com/privacy.html" target="_blank"
-             style="color:var(--fire);text-decoration:none;">Privacy Policy</a>
-        </label>
-      </div>
-
-      <button onclick="checkPassword()" style="
-        width:100%;background:var(--fire);color:#0a0c0f;
-        border:none;border-radius:8px;padding:13px;
-        font-family:'Barlow Condensed',sans-serif;font-weight:900;
-        font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;
-        cursor:pointer;transition:opacity 0.2s;
-      " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-        Enter
-      </button>
-
-      <p id="pwError" style="
-        color:#ff4444;font-size:0.78rem;margin-top:12px;
-        font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;
-        min-height:18px;text-transform:uppercase;
-      "></p>
+    <!-- Tab switcher -->
+    <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;gap:4px;">
+      <button id="tabLogin" onclick="showTab('login')" style="flex:1;padding:9px;border:none;border-radius:7px;background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">LOG IN</button>
+      <button id="tabSignup" onclick="showTab('signup')" style="flex:1;padding:9px;border:none;border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">SIGN UP</button>
     </div>
 
-    <p style="font-size:0.68rem;color:var(--muted);margin-top:20px;letter-spacing:0.06em;">
-      scenesounds.app · Practical Development Ltd
-    </p>
+    <!-- Login form -->
+    <div id="formLogin" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+      <input id="loginEmail" type="email" placeholder="Email address" autocomplete="email"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <button onclick="doLogin()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Log In</button>
+      <p id="loginError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
+      <a href="#" onclick="doForgotPassword()" style="display:block;margin-top:8px;font-size:0.75rem;color:var(--muted);text-decoration:none;">Forgot password?</a>
+    </div>
 
-    <a href="mailto:info@scenesounds.app?subject=Scene Sounds Access Request&body=Hi, I'd like to request access to Scene Sounds." style="
-      display:inline-block;margin-top:14px;
-      border:1px solid var(--border);
-      border-radius:8px;padding:10px 24px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:700;
-      font-size:0.82rem;letter-spacing:0.12em;text-transform:uppercase;
-      color:var(--muted);text-decoration:none;
-      transition:all 0.2s;
-    " onmouseover="this.style.borderColor='var(--fire)';this.style.color='var(--fire)'"
-       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
-      ✉ Request Access
-    </a>
+    <!-- Signup form -->
+    <div id="formSignup" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
+      <input id="signupName" type="text" placeholder="Full name" autocomplete="name"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <input id="signupEmail" type="email" placeholder="Email address" autocomplete="email"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <input id="signupPassword" type="password" placeholder="Create password" autocomplete="new-password"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;text-align:left;">
+        <input type="checkbox" id="tcBoxSignup" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--fire);cursor:pointer;">
+        <label for="tcBoxSignup" style="font-family:'Barlow',sans-serif;font-size:0.78rem;color:var(--muted);line-height:1.5;cursor:pointer;">
+          I agree to the <a href="https://scenesounds.com/terms.html" target="_blank" style="color:var(--fire);text-decoration:none;">Terms of Use</a> and <a href="https://scenesounds.com/privacy.html" target="_blank" style="color:var(--fire);text-decoration:none;">Privacy Policy</a>
+        </label>
+      </div>
+      <button onclick="doSignup()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Create Free Account</button>
+      <p id="signupError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
+      <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Free plan includes 6 sounds per category and 2 scenarios.</p>
+    </div>
+
+    <!-- Beta access divider -->
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+      <span style="font-size:0.7rem;color:var(--muted);letter-spacing:0.1em;">OR</span>
+      <div style="flex:1;height:1px;background:var(--border);"></div>
+    </div>
+
+    <!-- Beta password -->
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
+      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Beta Access Code</p>
+      <input id="pwInput" type="password" placeholder="Access code"
+        onkeydown="if(event.key==='Enter')checkPassword()"
+        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:11px 16px;margin-bottom:10px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;text-align:center;letter-spacing:0.15em;"
+        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
+      <button onclick="checkPassword()" style="width:100%;background:transparent;color:var(--fire);border:1px solid var(--fire);border-radius:8px;padding:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Enter</button>
+      <p id="pwError" style="color:#ff4444;font-size:0.75rem;margin-top:8px;min-height:14px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
+    </div>
+
+    <p style="font-size:0.68rem;color:var(--muted);margin-top:16px;letter-spacing:0.06em;">
+      scenesounds.app · Sector 3 Group Ltd
+    </p>
   </div>
 </div>
 
+<!-- PRO UPGRADE BANNER (shown to free users) -->
+<div id="upgradeBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:500;
+  background:linear-gradient(135deg,#1a1208,#2a1f10);
+  border-top:1px solid rgba(255,107,53,0.3);
+  padding:12px 20px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <div>
+    <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);">Free Plan</span>
+    <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">6 sounds per category · 2 scenarios</span>
+  </div>
+  <a href="https://scenesounds.app/upgrade" style="background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.1em;padding:8px 20px;border-radius:20px;text-decoration:none;white-space:nowrap;">Upgrade to Pro — £9.99/yr</a>
+</div>
+
 <script>
+// ── TAB SWITCHER ────────────────────────────────────────────────────
+function showTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('formLogin').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('formSignup').style.display = isLogin ? 'none' : 'block';
+  document.getElementById('tabLogin').style.background = isLogin ? 'var(--fire)' : 'transparent';
+  document.getElementById('tabLogin').style.color = isLogin ? '#0a0c0f' : 'var(--muted)';
+  document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : 'var(--fire)';
+  document.getElementById('tabSignup').style.color = isLogin ? 'var(--muted)' : '#0a0c0f';
+}
+
+// ── MEMBERSTACK AUTH ────────────────────────────────────────────────
+let currentPlan = 'free'; // 'free' or 'pro'
+
+async function initAuth() {
+  try {
+    const member = await window.$memberstackDom.getCurrentMember();
+    if (member && member.data) {
+      const plans = member.data.planConnections || [];
+      const isPro = plans.some(p =>
+        p.planId && (p.planId.toLowerCase().includes('pro') || p.planId.toLowerCase().includes('organisation'))
+      );
+      currentPlan = isPro ? 'pro' : 'free';
+      hideAuthScreen();
+    }
+  } catch(e) {
+    // Not logged in — stay on auth screen
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginError');
+  err.textContent = 'Signing in...';
+  try {
+    const { data } = await window.$memberstackDom.loginMemberEmailPassword({ email, password });
+    const plans = data.planConnections || [];
+    const isPro = plans.some(p => p.planId && (p.planId.toLowerCase().includes('pro') || p.planId.toLowerCase().includes('organisation')));
+    currentPlan = isPro ? 'pro' : 'free';
+    hideAuthScreen();
+  } catch(e) {
+    err.textContent = e.message || 'Incorrect email or password';
+  }
+}
+
+async function doSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  const tc = document.getElementById('tcBoxSignup').checked;
+  const err = document.getElementById('signupError');
+
+  if (!tc) { err.textContent = 'Please accept the Terms of Use'; return; }
+  if (!name || !email || !password) { err.textContent = 'Please fill in all fields'; return; }
+
+  err.textContent = 'Creating account...';
+  try {
+    await window.$memberstackDom.signupMemberEmailPassword({
+      email, password,
+      customFields: { name }
+    });
+    currentPlan = 'free';
+    hideAuthScreen();
+  } catch(e) {
+    err.textContent = e.message || 'Could not create account';
+  }
+}
+
+async function doForgotPassword() {
+  const email = document.getElementById('loginEmail').value.trim();
+  if (!email) { document.getElementById('loginError').textContent = 'Enter your email first'; return; }
+  try {
+    await window.$memberstackDom.sendMemberResetPasswordEmail({ email });
+    document.getElementById('loginError').style.color = 'var(--teal)';
+    document.getElementById('loginError').textContent = 'Reset email sent';
+  } catch(e) {
+    document.getElementById('loginError').textContent = e.message || 'Could not send reset email';
+  }
+}
+
+// ── BETA PASSWORD (kept for current beta users) ─────────────────────
 function checkPassword() {
   const input = document.getElementById('pwInput').value;
   const error = document.getElementById('pwError');
-  const tcBox = document.getElementById('tcBox');
-
-  if (!tcBox.checked) {
-    error.textContent = 'Please accept the Terms of Use';
-    error.style.color = '#ff4444';
-    return;
-  }
-
   if (['EssexACF', 'ArmyCadets', 'Rescue2', 'Fraser=Prick', 'Demo'].includes(input)) {
-    document.getElementById('passwordScreen').style.display = 'none';
+    currentPlan = 'pro'; // Beta users get full access
     sessionStorage.setItem('ss_auth', '1');
+    hideAuthScreen();
   } else {
-    error.textContent = 'Incorrect password';
-    error.style.color = '#ff4444';
+    error.textContent = 'Incorrect access code';
     document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').style.borderColor = '#ff4444';
-    setTimeout(() => {
-      error.textContent = '';
-      document.getElementById('pwInput').style.borderColor = 'var(--border)';
-    }, 2000);
+    setTimeout(() => error.textContent = '', 2000);
   }
 }
-// Auto-dismiss if already authenticated this session
+
+// ── ACCESS CONTROL ──────────────────────────────────────────────────
+const FREE_LIMIT = 6;
+const FREE_SCENARIO_LIMIT = 2;
+
+function applyAccessControl() {
+  if (currentPlan === 'pro') return; // Full access
+
+  // Show upgrade banner
+  const banner = document.getElementById('upgradeBanner');
+  banner.style.display = 'flex';
+
+  // Lock sounds beyond first 6 per category
+  const cats = ['general','medical','fire','police','military','clinical'];
+  cats.forEach(cat => {
+    const soundsInCat = sounds.filter(s => s.cat === cat);
+    soundsInCat.slice(FREE_LIMIT).forEach(sound => {
+      const btn = document.querySelector(`.btn-${sound.id}`);
+      if (btn) lockButton(btn);
+    });
+  });
+
+  // Lock scenarios beyond first 2
+  const scenarioCards = document.querySelectorAll('.scenario-card');
+  scenarioCards.forEach((card, i) => {
+    if (i >= FREE_SCENARIO_LIMIT) lockScenarioCard(card);
+  });
+}
+
+function lockButton(btn) {
+  btn.style.opacity = '0.35';
+  btn.style.cursor = 'pointer';
+  btn.style.filter = 'grayscale(60%)';
+  btn.onclick = showUpgradePrompt;
+  // Add lock badge
+  const badge = document.createElement('div');
+  badge.innerHTML = '🔒';
+  badge.style.cssText = 'position:absolute;top:6px;right:6px;font-size:0.7rem;';
+  btn.style.position = 'relative';
+  btn.appendChild(badge);
+}
+
+function lockScenarioCard(card) {
+  card.style.opacity = '0.35';
+  card.style.filter = 'grayscale(60%)';
+  card.style.cursor = 'pointer';
+  card.onclick = showUpgradePrompt;
+  const badge = document.createElement('div');
+  badge.innerHTML = '🔒 Pro';
+  badge.style.cssText = 'position:absolute;top:8px;right:8px;font-size:0.65rem;background:rgba(255,107,53,0.9);color:#0a0c0f;padding:2px 7px;border-radius:4px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;';
+  card.style.position = 'relative';
+  card.appendChild(badge);
+}
+
+function showUpgradePrompt() {
+  if (confirm('Upgrade to Pro for £9.99/year to unlock all sounds and scenarios.')) {
+    window.open('https://scenesounds.app/upgrade', '_blank');
+  }
+}
+
+// ── HIDE AUTH SCREEN & BOOT APP ─────────────────────────────────────
+function hideAuthScreen() {
+  const screen = document.getElementById('authScreen');
+  screen.style.opacity = '0';
+  screen.style.transition = 'opacity 0.4s';
+  setTimeout(() => {
+    screen.style.display = 'none';
+    // Apply access control after grids are built
+    setTimeout(applyAccessControl, 300);
+  }, 400);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────
+// Check beta session first, then Memberstack
 if (sessionStorage.getItem('ss_auth') === '1') {
   document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('passwordScreen').style.display = 'none';
+    currentPlan = 'pro';
+    hideAuthScreen();
+  });
+} else {
+  // Wait for Memberstack to load then check
+  window.addEventListener('load', () => {
+    setTimeout(initAuth, 800);
   });
 }
 </script>
@@ -832,6 +978,10 @@ const sounds = [
   { id: 'stridor', label: 'Stridor', sub: 'Upper airway obstruction', icon: '🌬️', cat: 'medical',
     url: '/stridor.mp3',
     freq: 900, type: 'sawtooth' },
+  { id: 'shivering', label: 'Shivering', sub: 'Hypothermia / chills', icon: '🥶', cat: 'medical',
+    freq: 6, type: 'triangle', pulse: true },
+  { id: 'gurgling', label: 'Gurgling', sub: 'Airway fluid / gurgling breath', icon: '💧', cat: 'medical',
+    url: '/gurgling.mp3', freq: 180, type: 'sine', pulse: true },
   // Fire & Rescue
   { id: 'alarm', label: 'Fire Alarm', sub: 'Building alarm', icon: '🚨', cat: 'fire',
     url: '/fire-alarm.mp3' },
@@ -984,6 +1134,26 @@ const sounds = [
     url: '/electric-arc.mp3', freq: 1400, type: 'sawtooth', pulse: true },
   { id: 'generator', label: 'Generator', sub: 'Portable generator running', icon: '🔋', cat: 'general',
     url: '/generator.mp3', freq: 85, type: 'sawtooth' },
+  { id: 'train', label: 'Train Station', sub: 'Passing train / rail noise', icon: '🚆', cat: 'general',
+    url: '/train-station.mp3', freq: 95, type: 'sawtooth' },
+  { id: 'chainsaw', label: 'Chainsaw', sub: 'Power tool cutting', icon: '🪚', cat: 'general',
+    url: '/chainsaw.mp3', freq: 220, type: 'sawtooth' },
+  { id: 'office', label: 'Office', sub: 'Office background ambience', icon: '🏢', cat: 'general',
+    url: '/office.mp3', freq: 200, type: 'triangle' },
+  { id: 'waves', label: 'Waves', sub: 'Sea / coastal water', icon: '🌊', cat: 'general',
+    url: '/waves.mp3', freq: 110, type: 'sine' },
+  { id: 'motorbike', label: 'Motorbike', sub: 'Motorcycle engine', icon: '🏍️', cat: 'general',
+    url: '/motorbike.mp3', freq: 180, type: 'sawtooth' },
+  { id: 'river', label: 'River', sub: 'Flowing water / rapids', icon: '🏞️', cat: 'general',
+    url: '/river.mp3', freq: 140, type: 'sine' },
+  { id: 'airport', label: 'Airport', sub: 'Terminal ambience / announcements', icon: '✈️', cat: 'general',
+    url: '/airport.mp3', freq: 210, type: 'triangle' },
+  { id: 'railway_crossing', label: 'Railway Crossing', sub: 'Level crossing bell / barrier', icon: '🚦', cat: 'general',
+    url: '/railway-crossing.mp3', freq: 880, type: 'square', pulse: true },
+  { id: 'jungle', label: 'Jungle', sub: 'Rainforest ambience', icon: '🌴', cat: 'general',
+    url: '/jungle.mp3', freq: 320, type: 'triangle' },
+  { id: 'farm', label: 'Farm', sub: 'Farmyard / livestock ambience', icon: '🐄', cat: 'general',
+    url: '/farm.mp3', freq: 180, type: 'triangle' },
   // Military / Combat Medic
   { id: 'gunfire', label: 'Gunfire', sub: 'Small arms / contact', icon: '🔫', cat: 'military',
     url: '/gunfire.mp3' },
@@ -1815,7 +1985,7 @@ renderCustomScenarios();
 ">
   <a href="https://scenesounds.app" style="color:var(--muted);text-decoration:none;">SceneSounds.app</a>
   &nbsp;|&nbsp;
-  Practical Development Ltd
+  Sector 3 Group Ltd
   &nbsp;|&nbsp;
   <a href="/terms.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
      onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Terms</a>
