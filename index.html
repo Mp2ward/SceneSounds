@@ -492,7 +492,7 @@
     <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);">Free Plan</span>
     <span style="font-size:0.78rem;color:var(--muted);margin-left:8px;">6 sounds per category · 2 scenarios</span>
   </div>
-  <a href="https://scenesounds.app/upgrade" style="background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.1em;padding:8px 20px;border-radius:20px;text-decoration:none;white-space:nowrap;">Upgrade to Pro — £9.99/yr</a>
+  <a href="https://scenesounds.app/upgrade" style="background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.1em;padding:8px 20px;border-radius:20px;text-decoration:none;white-space:nowrap;">Upgrade to Pro — £4.99/month</a>
 </div>
 
 <script>
@@ -646,7 +646,7 @@ function lockScenarioCard(card) {
 }
 
 function showUpgradePrompt() {
-  if (confirm('Upgrade to Pro for £9.99/year to unlock all sounds and scenarios.')) {
+  if (confirm('Upgrade to Pro for £4.99/month to unlock all sounds and scenarios.')) {
     window.open('https://scenesounds.app/upgrade', '_blank');
   }
 }
@@ -1992,10 +1992,20 @@ renderCustomScenarios();
   &nbsp;|&nbsp;
   <a href="/privacy.html" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
      onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Privacy</a>
+  &nbsp;|&nbsp;
+  <a href="#" onclick="doLogout()" style="color:var(--muted);text-decoration:none;transition:color 0.2s;"
+     onmouseover="this.style.color='#ff6b35'" onmouseout="this.style.color='var(--muted)'">Log Out</a>
 </div>
 
 <script>
-// Feedback button — replace URL when Google Form is ready
+async function doLogout() {
+  try {
+    await window.$memberstackDom.logout();
+  } catch(e) {}
+  sessionStorage.removeItem('ss_auth');
+  location.reload();
+}
+
 function openFeedback() {
   window.open('https://www.cognitoforms.com/SceneSounds1/SceneSoundsFeedback', '_blank');
 }
