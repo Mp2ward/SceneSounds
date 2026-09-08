@@ -651,7 +651,8 @@ function hideAuthScreen() {
   screen.style.transition = 'opacity 0.4s';
   setTimeout(() => {
     screen.style.display = 'none';
-    setTimeout(applyAccessControl, 300);
+    // Apply access control after grids are built
+    setTimeout(applyAccessControl, 800);
     // Show pricing modal after 4 seconds for free users
     if (currentPlan === 'free') {
       setTimeout(showPricingModal, 4000);
@@ -1838,6 +1839,8 @@ function buildScenarios() {
 
 buildGrids();
 buildScenarios();
+// Apply access control after all grids are rendered
+setTimeout(applyAccessControl, 200);
 
 // ── CUSTOM SCENARIO BUILDER ───────────────────────────────────────────────────
 const ICONS = ['🚑','🚒','🚔','🏥','🔥','💥','🚁','🛡️','⚠️','☣️','🌊','🏔️','🌪️','🌧️','🎯','📡','🩺','🩸','💊','🛠️','⚡','🔦','🗺️','🎖️'];
