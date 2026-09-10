@@ -673,16 +673,8 @@ function hideAuthScreen() {
   screen.style.transition = 'opacity 0.4s';
   setTimeout(() => {
     screen.style.display = 'none';
-    // Poll until sound buttons exist, then lock
-    function waitForGrids() {
-      const btns = document.querySelectorAll('.sound-btn');
-      if (btns.length > 10) {
-        applyAccessControl();
-      } else {
-        setTimeout(waitForGrids, 200);
-      }
-    }
-    waitForGrids();
+    // Grids are already built — apply access control now
+    applyAccessControl();
     // Show pricing modal after 4 seconds for free users
     if (currentPlan === 'free') {
       setTimeout(showPricingModal, 4000);
@@ -691,16 +683,19 @@ function hideAuthScreen() {
 }
 
 // ── INIT ─────────────────────────────────────────────────────────────
-// Check beta session first, then Memberstack
+// Hide main content until auth is confirmed
+document.body.style.visibility = 'hidden';
+
 if (sessionStorage.getItem('ss_auth') === '1') {
   document.addEventListener('DOMContentLoaded', () => {
     currentPlan = 'pro';
+    document.body.style.visibility = 'visible';
     hideAuthScreen();
   });
 } else {
-  // Wait for Memberstack to load then check
   window.addEventListener('load', () => {
-    setTimeout(initAuth, 800);
+    document.body.style.visibility = 'visible';
+    setTimeout(initAuth, 500);
   });
 }
 </script>
