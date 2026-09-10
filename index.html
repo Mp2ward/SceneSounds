@@ -750,13 +750,13 @@ if (sessionStorage.getItem('ss_auth') === '1') {
       </div>
 
       <!-- CTA -->
-      <button data-ms-price:add="prc_pro-monthly-c9py0vvw" style="display:block;width:100%;text-align:center;
+      <button onclick="upgradePlan('prc_pro-monthly-c9py0vvw')" style="display:block;width:100%;text-align:center;
         background:#ff6b35;color:#07090c;padding:14px;border-radius:8px;
         font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
         letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;border:none;">
         Monthly — £3.99/mo
       </button>
-      <button data-ms-price:add="prc_pro-annual-m5pz0vzt" style="display:block;width:100%;text-align:center;
+      <button onclick="upgradePlan('prc_pro-annual-m5pz0vzt')" style="display:block;width:100%;text-align:center;
         background:transparent;color:#ff6b35;padding:13px;border-radius:8px;
         font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
         letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;
@@ -780,6 +780,16 @@ if (sessionStorage.getItem('ss_auth') === '1') {
 <script>
 function closePricingModal() {
   document.getElementById('pricingModal').style.display = 'none';
+}
+async function upgradePlan(priceId) {
+  try {
+    await window.$memberstackDom.purchasePlansWithCheckout({
+      priceId: priceId
+    });
+  } catch(e) {
+    // Fallback — open Memberstack hosted checkout
+    window.open(`https://checkout.memberstack.com/buy/${priceId}`, '_blank');
+  }
 }
 function showPricingModal() {
   if (currentPlan === 'pro') return; // Only show to free/locked users
