@@ -520,6 +520,7 @@ async function initAuth() {
           p.planId.toLowerCase().includes('organisation')
         )
       );
+      // No plan or free plan = free tier
       currentPlan = isPro ? 'pro' : 'free';
       hideAuthScreen();
     }
@@ -564,7 +565,8 @@ async function doSignup() {
   try {
     await window.$memberstackDom.signupMemberEmailPassword({
       email, password,
-      customFields: { name }
+      customFields: { name },
+      planIds: [{ planId: 'pln_free--435m0z2e' }]
     });
     currentPlan = 'free';
     hideAuthScreen();
