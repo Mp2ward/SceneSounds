@@ -673,7 +673,9 @@ function hideAuthScreen() {
   screen.style.transition = 'opacity 0.4s';
   setTimeout(() => {
     screen.style.display = 'none';
-    // Grids are already built — apply access control now
+    // Build grids NOW — plan is confirmed so locking bakes in correctly
+    buildGrids();
+    buildScenarios();
     applyAccessControl();
     // Show pricing modal after 4 seconds for free users
     if (currentPlan === 'free') {
@@ -1530,11 +1532,33 @@ function updateMixer() {
   document.body.style.paddingBottom = count > 0 ? '220px' : '40px';
 }
 
+// Track how many sounds per category have been created
+const catCount = {};
+
 function createSoundBtn(sound) {
   const isClinical = sound.cat === 'clinical';
   const btn = document.createElement('button');
   btn.className = `sound-btn ${catClass[sound.cat]} btn-${sound.id}`;
   btn.style.setProperty('color', catColor[sound.cat]);
+
+  // Free plan locking — count sounds per category
+  if (!isClinical && currentPlan !== 'pro') {
+    catCount[sound.cat] = (catCount[sound.cat] || 0) + 1;
+    if (catCount[sound.cat] > FREE_LIMIT) {
+      btn.style.opacity = '0.35';
+      btn.style.cursor = 'pointer';
+      btn.style.filter = 'grayscale(60%)';
+      btn.style.position = 'relative';
+      btn.innerHTML = `
+        <span class="btn-icon">${sound.icon}</span>
+        <span class="btn-label">${sound.label}</span>
+        <span class="btn-sub">${sound.sub}</span>
+        <div style="position:absolute;top:6px;right:6px;font-size:0.7rem;">🔒</div>
+      `;
+      btn.onclick = () => showPricingModal();
+      return btn;
+    }
+  }
 
   if (isClinical) {
     btn.style.opacity = '0.45';
@@ -1872,9 +1896,7 @@ function buildScenarios() {
   });
 }
 
-buildGrids();
-buildScenarios();
-// Access control runs ONLY after Memberstack confirms the plan — not at load time
+// Grids built after auth confirms plan — see hideAuthScreen()
 
 // ── CUSTOM SCENARIO BUILDER ───────────────────────────────────────────────────
 const ICONS = ['🚑','🚒','🚔','🏥','🔥','💥','🚁','🛡️','⚠️','☣️','🌊','🏔️','🌪️','🌧️','🎯','📡','🩺','🩸','💊','🛠️','⚡','🔦','🗺️','🎖️'];
