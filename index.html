@@ -514,7 +514,12 @@ async function initAuth() {
     if (member && member.data) {
       const plans = member.data.planConnections || [];
       const isPro = plans.some(p =>
-        p.planId && (p.planId.toLowerCase().includes('pro') || p.planId.toLowerCase().includes('organisation'))
+        p.planId && (
+          p.planId === 'prc_pro-annual-m5pz0vzt' ||
+          p.planId === 'pln_free--435m0z2e' === false ||
+          p.planId.toLowerCase().includes('pro') ||
+          p.planId.toLowerCase().includes('organisation')
+        )
       );
       currentPlan = isPro ? 'pro' : 'free';
       hideAuthScreen();
@@ -532,7 +537,13 @@ async function doLogin() {
   try {
     const { data } = await window.$memberstackDom.loginMemberEmailPassword({ email, password });
     const plans = data.planConnections || [];
-    const isPro = plans.some(p => p.planId && (p.planId.toLowerCase().includes('pro') || p.planId.toLowerCase().includes('organisation')));
+    const isPro = plans.some(p =>
+      p.planId && (
+        p.planId === 'prc_pro-annual-m5pz0vzt' ||
+        p.planId.toLowerCase().includes('pro') ||
+        p.planId.toLowerCase().includes('organisation')
+      )
+    );
     currentPlan = isPro ? 'pro' : 'free';
     hideAuthScreen();
   } catch(e) {
