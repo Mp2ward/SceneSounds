@@ -3,2170 +3,942 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <title>Scene Sounds — Immersive Scenario</title>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#0a0c0f">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Scene Sounds">
-<link rel="apple-touch-icon" href="/icon-192.png">
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js')
-        .then(() => console.log('[Scene Sounds] SW registered'))
-        .catch(err => console.log('[Scene Sounds] SW failed:', err));
-    });
-  }
-</script>
+<meta name="description" content="Immersive Scenario for emergency services, military and healthcare professionals.">
+<meta property="og:title" content="Scene Sounds — Immersive Scenario">
+<meta property="og:description" content="Realistic audio environments for emergency training. One tap. Full scene.">
+<meta property="og:url" content="https://scenesounds.com">
+<meta name="theme-color" content="#07090c">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;600;700;800;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#07090c;--surface:#0f1318;--border:#1a1f28;
+  --text:#f0f2f5;--muted:#5a6270;--dim:#3a4250;
+  --orange:#ff6b35;--teal:#00c9a7;--blue:#4a9eff;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;overflow-x:hidden;}
 
-  :root {
-    --bg: #0a0c0f;
-    --surface: #111418;
-    --border: #1e2329;
-    --text: #e8eaed;
-    --muted: #5a6270;
-    --medical: #00c9a7;
-    --fire: #ff6b35;
-    --police: #4a9eff;
-    --general: #b48aff;
-    --military: #8ab840;
-    --clinical: #f472b6;
-    --active-glow: 0 0 20px currentColor;
-  }
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  padding:14px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(7,9,12,0.9);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-bars{display:flex;align-items:center;gap:2.5px;height:18px;}
+.nb{width:3px;border-radius:2px;background:var(--orange);animation:wb 1.4s ease-in-out infinite;}
+.nb:nth-child(1){height:7px;animation-delay:0s;}
+.nb:nth-child(2){height:12px;animation-delay:0.12s;}
+.nb:nth-child(3){height:17px;animation-delay:0.24s;}
+.nb:nth-child(4){height:12px;animation-delay:0.36s;}
+.nb:nth-child(5){height:7px;animation-delay:0.48s;}
+@keyframes wb{0%,100%{transform:scaleY(0.3);}50%{transform:scaleY(1);}}
+.nav-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.15rem;letter-spacing:0.1em;color:var(--text);}
+.nav-name span{color:var(--orange);}
+.nav-btn{
+  background:var(--orange);color:#07090c;
+  padding:9px 22px;border-radius:100px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:900;
+  font-size:0.82rem;letter-spacing:0.12em;text-transform:uppercase;
+  text-decoration:none;transition:all 0.2s;
+}
+.nav-btn:hover{opacity:0.85;transform:scale(1.04);}
 
-  body {
-    font-family: 'Barlow', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding-bottom: 100px;
-  }
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:120px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,107,53,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,53,0.04) 1px,transparent 1px);
+  background-size:55px 55px;
+  animation:gridMove 18s linear infinite;
+}
+@keyframes gridMove{0%{transform:translateY(0);}100%{transform:translateY(55px);}}
+.glow-a{position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.13) 0%,transparent 70%);top:-150px;left:-200px;animation:ga 9s ease-in-out infinite;pointer-events:none;}
+.glow-b{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(0,201,167,0.09) 0%,transparent 70%);bottom:-100px;right:-150px;animation:gb 11s ease-in-out infinite;pointer-events:none;}
+@keyframes ga{0%,100%{transform:translate(0,0);}50%{transform:translate(50px,40px);}}
+@keyframes gb{0%,100%{transform:translate(0,0);}50%{transform:translate(-40px,-30px);}}
 
-  /* Header */
-  header {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    background: rgba(10,12,15,0.95);
-    backdrop-filter: blur(12px);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-  }
-  .logo {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900;
-    font-size: 1.6rem;
-    letter-spacing: 0.08em;
-    color: var(--text);
-  }
-  .logo span { color: var(--fire); }
-  .status-bar {
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .status-bar .dot {
-    display: inline-block;
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: #2a2e35;
-    margin-right: 6px;
-    vertical-align: middle;
-    transition: background 0.3s;
-  }
-  .status-bar.playing .dot { background: var(--medical); box-shadow: 0 0 8px var(--medical); }
+.hero-inner{position:relative;z-index:10;animation:heroIn 1.2s cubic-bezier(0.16,1,0.3,1) forwards;opacity:0;transform:translateY(40px);}
+@keyframes heroIn{to{opacity:1;transform:translateY(0);}}
 
-  /* Now playing bar */
-  #nowPlaying {
-    display: none;
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 14px 24px;
-    z-index: 200;
-    align-items: center;
-    gap: 16px;
-  }
-  #nowPlaying.visible { display: flex; }
-  .np-icon {
-    width: 36px; height: 36px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-  .np-info { flex: 1; }
-  .np-title {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.04em;
-  }
-  .np-sub {
-    font-size: 0.72rem;
-    color: var(--muted);
-    margin-top: 2px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .np-wave {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    height: 24px;
-  }
-  .np-wave span {
-    display: block;
-    width: 3px;
-    background: var(--fire);
-    border-radius: 2px;
-    animation: wave 1s ease-in-out infinite;
-  }
-  .np-wave span:nth-child(2) { animation-delay: 0.15s; }
-  .np-wave span:nth-child(3) { animation-delay: 0.3s; }
-  .np-wave span:nth-child(4) { animation-delay: 0.45s; }
-  .np-wave span:nth-child(5) { animation-delay: 0.6s; }
-  @keyframes wave {
-    0%, 100% { height: 4px; }
-    50% { height: 22px; }
-  }
-  .stop-all-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    padding: 7px 14px;
-    border-radius: 6px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .stop-all-btn:hover { border-color: var(--fire); color: var(--fire); }
+.hero-wave{display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:36px;}
+.hw{width:9px;border-radius:5px;background:var(--orange);animation:wb 1.4s ease-in-out infinite;}
+.hw:nth-child(1){height:20px;animation-delay:0s;opacity:0.4;}
+.hw:nth-child(2){height:36px;animation-delay:0.1s;opacity:0.6;}
+.hw:nth-child(3){height:56px;animation-delay:0.2s;opacity:0.8;}
+.hw:nth-child(4){height:72px;animation-delay:0.3s;}
+.hw:nth-child(5){height:88px;animation-delay:0.4s;}
+.hw:nth-child(6){height:72px;animation-delay:0.5s;}
+.hw:nth-child(7){height:56px;animation-delay:0.6s;opacity:0.8;}
+.hw:nth-child(8){height:36px;animation-delay:0.7s;opacity:0.6;}
+.hw:nth-child(9){height:20px;animation-delay:0.8s;opacity:0.4;}
 
-  /* Category tabs */
-  .tabs {
-    display: flex;
-    overflow-x: auto;
-    gap: 0;
-    padding: 0 16px;
-    border-bottom: 1px solid var(--border);
-    scrollbar-width: none;
-  }
-  .tabs::-webkit-scrollbar { display: none; }
-  .tabs-search-sticky {
-    position: sticky;
-    top: 65px;
-    z-index: 90;
-    background: rgba(10,12,15,0.97);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .tab {
-    padding: 16px 20px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 1rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: none;
-    background: none;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    margin-bottom: -1px;
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
-  .tab:hover { color: var(--text); }
-  .tab.active { color: var(--text); border-bottom-color: var(--fire); }
-  .tab .tab-dot {
-    display: inline-block;
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
+.hero-tag{font-family:'Barlow Condensed',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--orange);margin-bottom:18px;animation:fu 1s 0.3s both;}
+.hero-h1{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(4.5rem,16vw,10rem);line-height:0.88;letter-spacing:-0.02em;text-transform:uppercase;animation:fu 1s 0.5s both;}
+.hero-h1 .outline{-webkit-text-fill-color:transparent;-webkit-text-stroke:2px var(--orange);display:block;}
+.hero-sub{font-family:'Barlow Condensed',sans-serif;font-weight:300;font-size:clamp(0.9rem,2.5vw,1.3rem);letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-top:22px;animation:fu 1s 0.7s both;}
+.hero-actions{display:flex;gap:14px;justify-content:center;margin-top:40px;flex-wrap:wrap;animation:fu 1s 0.9s both;}
+.btn-primary{background:var(--orange);color:#07090c;padding:14px 36px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:all 0.3s;animation:btnPulse 3s ease-in-out infinite;}
+.btn-primary:hover{transform:scale(1.05);box-shadow:0 0 40px rgba(255,107,53,0.5);}
+@keyframes btnPulse{0%,100%{box-shadow:0 0 18px rgba(255,107,53,0.2);}50%{box-shadow:0 0 36px rgba(255,107,53,0.45);}}
+.btn-secondary{background:none;border:1px solid var(--border);color:var(--muted);padding:14px 32px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+.btn-secondary:hover{border-color:var(--orange);color:var(--orange);}
+@keyframes fu{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
 
-  /* Grid */
-  .grid-section { display: none; padding: 24px 16px; }
-  .grid-section.active { display: block; }
-  .section-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 14px;
-    padding-left: 2px;
-  }
-  .sound-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 24px;
-  }
-  @media (min-width: 500px) { .sound-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (min-width: 768px) { .sound-grid { grid-template-columns: repeat(5, 1fr); } }
+.scroll-cue{position:absolute;bottom:36px;left:0;right:0;margin:0 auto;width:fit-content;display:flex;flex-direction:column;align-items:center;gap:8px;animation:fu 1s 1.4s both;}
+.scroll-line{width:1px;height:44px;background:linear-gradient(to bottom,var(--orange),transparent);animation:scPulse 2s ease-in-out infinite;}
+@keyframes scPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+.scroll-label{font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;letter-spacing:0.22em;color:var(--muted);text-transform:uppercase;}
 
-  /* Sound buttons */
-  .sound-btn {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 8px 10px;
-    cursor: pointer;
-    text-align: center;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    overflow: hidden;
-  }
-  .sound-btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    transition: opacity 0.3s;
-    border-radius: 12px;
-  }
-  .sound-btn:hover { transform: translateY(-2px); border-color: #2e3540; }
-  .sound-btn.playing {
-    border-color: currentColor;
-    transform: translateY(-2px);
-  }
-  .sound-btn.playing::before { opacity: 0.06; background: currentColor; }
+/* ── SECTIONS ── */
+section{padding:60px 24px;}
+.section-center{text-align:center;max-width:760px;margin:0 auto;}
+.eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.24em;text-transform:uppercase;color:var(--orange);margin-bottom:20px;}
+.big-h{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2.2rem,6vw,4.2rem);line-height:1.02;letter-spacing:-0.01em;margin-bottom:22px;}
+.big-h em{font-style:normal;color:var(--orange);}
+.body-text{font-size:1rem;color:var(--muted);line-height:1.8;max-width:580px;margin:0 auto;}
 
-  .btn-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-    display: block;
-  }
-  .btn-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.9rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text);
-    line-height: 1.2;
-  }
-  .btn-sub {
-    font-size: 0.75rem;
-    color: var(--muted);
-    letter-spacing: 0.04em;
-    line-height: 1.3;
-  }
-  .play-indicator {
-    width: 28px; height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--border);
-    transition: all 0.2s;
-    flex-shrink: 0;
-  }
-  .play-indicator svg { width: 10px; height: 10px; fill: var(--muted); transition: fill 0.2s; }
-  .sound-btn.playing .play-indicator {
-    background: currentColor;
-  }
-  .sound-btn.playing .play-indicator svg { fill: #0a0c0f; }
+/* Reveal */
+.rv{opacity:0;transform:translateY(48px);transition:opacity 0.75s ease,transform 0.75s ease;}
+.rv.show{opacity:1;transform:translateY(0);}
+.rv.d1{transition-delay:0.1s;}.rv.d2{transition-delay:0.22s;}.rv.d3{transition-delay:0.34s;}
 
-  /* Pulse ring on playing */
-  .pulse-ring {
-    position: absolute;
-    top: 10px; right: 10px;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: currentColor;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .sound-btn.playing .pulse-ring {
-    opacity: 1;
-    animation: pulse 1.5s ease-out infinite;
-  }
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.8; }
-    100% { transform: scale(3); opacity: 0; }
-  }
+/* ── PROBLEM ── */
+.problem{background:linear-gradient(180deg,var(--bg) 0%,#0a0e14 100%);}
 
-  .cat-medical { color: var(--medical); }
-  .cat-fire { color: var(--fire); }
-  .cat-police { color: var(--police); }
-  .cat-general { color: var(--general); }
-  .cat-military { color: var(--military); }
-  .cat-clinical { color: var(--clinical); }
+/* ── APP PREVIEW ── */
+.preview{background:#0a0e14;}
+.preview-inner{max-width:1000px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+@media(max-width:680px){.preview-inner{grid-template-columns:1fr;}} @media(max-width:640px){
+  .manikin-grid{grid-template-columns:repeat(3,1fr)!important;gap:5px!important;padding:0 2px;}
+  .device-phone{width:68px!important;padding:7px 5px!important;}
+  .device-tablet{width:120px!important;padding:5px!important;}
+}
+.preview-copy h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(2rem,5vw,3.2rem);line-height:1;margin-bottom:20px;}
+.preview-copy p{color:var(--muted);line-height:1.8;margin-bottom:14px;font-size:0.95rem;}
 
-  /* Volume control */
-  .volume-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background: var(--surface);
-    border-radius: 12px;
-    margin-bottom: 24px;
-    border: 1px solid var(--border);
-  }
-  .vol-label {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    width: 60px;
-    flex-shrink: 0;
-  }
-  input[type=range] {
-    flex: 1;
-    -webkit-appearance: none;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-  }
-  input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--fire);
-    cursor: pointer;
-  }
-  .vol-val {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--muted);
-    width: 35px;
-    text-align: right;
-  }
+/* Phone mockup */
+.phone{width:230px;margin:0 auto;position:relative;}
+.phone-wrap{
+  background:#111418;border:2px solid #252b35;border-radius:34px;
+  padding:14px 11px;
+  box-shadow:0 0 0 1px #0a0c0f,0 40px 80px rgba(0,0,0,0.7),0 0 60px rgba(255,107,53,0.08);
+  animation:phoneBob 4s ease-in-out infinite;
+}
+@keyframes phoneBob{0%,100%{transform:translateY(0) rotate(-1deg);}50%{transform:translateY(-14px) rotate(1deg);}}
+.phone-notch{width:56px;height:7px;background:#1a1f28;border-radius:4px;margin:0 auto 12px;}
+.phone-hdr{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-bottom:1px solid #1a1f28;margin-bottom:8px;}
+.phone-wave{display:flex;align-items:center;gap:2px;height:14px;}
+.pw{width:2.5px;border-radius:2px;background:var(--orange);animation:wb 1.4s ease-in-out infinite;}
+.pw:nth-child(1){height:5px;animation-delay:0s;}
+.pw:nth-child(2){height:9px;animation-delay:0.15s;}
+.pw:nth-child(3){height:13px;animation-delay:0.3s;}
+.pw:nth-child(4){height:9px;animation-delay:0.45s;}
+.pw:nth-child(5){height:5px;animation-delay:0.6s;}
+.phone-status{font-family:'Barlow Condensed',sans-serif;font-size:0.48rem;letter-spacing:0.1em;color:var(--teal);}
+.phone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;}
+.pb{background:#1a1f28;border-radius:6px;padding:7px 3px;text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:0.4rem;letter-spacing:0.04em;text-transform:uppercase;color:#6a7a8a;border:1px solid #232930;}
+.pb.a1{border-color:var(--orange);color:var(--orange);background:rgba(255,107,53,0.08);animation:pa 1.5s ease-in-out infinite;}
+.pb.a2{border-color:var(--teal);color:var(--teal);background:rgba(0,201,167,0.08);animation:pa2 2s ease-in-out infinite;}
+@keyframes pa{0%,100%{box-shadow:0 0 6px rgba(255,107,53,0.25);}50%{box-shadow:0 0 14px rgba(255,107,53,0.55);}}
+@keyframes pa2{0%,100%{box-shadow:0 0 6px rgba(0,201,167,0.25);}50%{box-shadow:0 0 14px rgba(0,201,167,0.55);}}
+.phone-mixer{background:#1a1f28;border-radius:7px;padding:7px 8px;border:1px solid #232930;}
+.mix-row{display:flex;align-items:center;gap:5px;margin-bottom:4px;}
+.mix-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.mix-lbl{font-family:'Barlow Condensed',sans-serif;font-size:0.4rem;letter-spacing:0.06em;color:#6a7a8a;width:36px;flex-shrink:0;}
+.mix-track{flex:1;height:2px;background:#252b35;border-radius:1px;overflow:hidden;}
+.mix-fill{height:100%;border-radius:1px;animation:mf 3s ease-in-out infinite;}
+@keyframes mf{0%{width:40%;}50%{width:82%;}100%{width:55%;}}
 
-  /* Info banner */
-  .info-banner {
-    background: rgba(255,107,53,0.08);
-    border: 1px solid rgba(255,107,53,0.2);
-    border-radius: 10px;
-    padding: 12px 16px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 24px;
-  }
-  .info-banner strong { color: var(--fire); font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.06em; }
+/* ── FEATURES ── */
+.features{background:var(--bg);}
+.feat-grid{max-width:900px;margin:56px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+@media(max-width:640px){.feat-grid{grid-template-columns:1fr;}}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 22px;position:relative;overflow:hidden;transition:all 0.25s;}
+.feat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--orange);transform:scaleX(0);transform-origin:left;transition:transform 0.3s;}
+.feat-card:hover{transform:translateY(-4px);border-color:#252b35;}
+.feat-card:hover::after{transform:scaleX(1);}
+.feat-icon{font-size:1.8rem;margin-bottom:14px;display:block;}
+.feat-title{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px;}
+.feat-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;}
 
-  .sound-btn.coming-soon {
-    background: rgba(255,255,255,0.02) !important;
-    border-color: var(--border) !important;
-    pointer-events: none;
-  }
-  .scenario-card.scenario-active {
-    box-shadow: 0 0 0 1px currentColor inset;
-    background: rgba(255,255,255,0.04);
-  }
-  .scenario-card.scenario-active .sc-play-icon {
-    background: currentColor !important;
-    color: #0a0c0f;
-  }
+/* ── TICKER ── */
+.ticker-section{background:#0a0e14;overflow:hidden;position:relative;padding:80px 0 80px;}
+.ticker-section::before,.ticker-section::after{content:'';position:absolute;top:0;bottom:0;width:160px;z-index:10;pointer-events:none;}
+.ticker-section::before{left:0;background:linear-gradient(to right,#0a0e14,transparent);}
+.ticker-section::after{right:0;background:linear-gradient(to left,#0a0e14,transparent);}
+.ticker-hdr{text-align:center;margin-bottom:48px;padding:0 24px;}
+.ticker-track{display:flex;gap:14px;width:max-content;animation:tick 28s linear infinite;}
+.ticker-track:hover{animation-play-state:paused;}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.chip{background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:12px 22px;display:flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0;}
+.chip:nth-child(3n+1){border-color:rgba(255,107,53,0.3);}
+.chip:nth-child(3n+2){border-color:rgba(0,201,167,0.25);}
+.chip:nth-child(3n){border-color:rgba(74,158,255,0.25);}
+.chip-ico{font-size:1.1rem;}
+.chip-lbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.08em;text-transform:uppercase;}
+
+/* ── WHO IS IT FOR ── */
+.who{background:var(--bg);}
+.who-grid{max-width:860px;margin:56px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:600px){.who-grid{grid-template-columns:1fr;}}
+
+/* ── TESTIMONIALS ── */
+.testi-scroll{max-width:100%;margin:56px auto 0;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent);}
+.testi-track{display:flex;gap:16px;width:max-content;animation:testiScroll 38s linear infinite;}
+.testi-scroll:hover .testi-track{animation-play-state:paused;}
+@keyframes testiScroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.testi-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:26px 24px;display:flex;flex-direction:column;width:300px;flex-shrink:0;}
+.testi-stars{color:#f0c040;font-size:1rem;letter-spacing:0.1em;margin-bottom:14px;}
+.testi-quote{font-size:0.92rem;line-height:1.65;color:var(--text);margin-bottom:18px;flex-grow:1;}
+.testi-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;color:var(--text);}
+.testi-role{font-size:0.76rem;color:var(--muted);margin-top:2px;}
+.who-card{background:var(--surface);padding:36px 28px;border:1px solid var(--border);border-radius:14px;}
+.who-icon{font-size:2.2rem;margin-bottom:14px;display:block;}
+.who-title{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;}
+.who-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;}
+
+/* ── STATS ── */
+.stats{background:#0a0e14;}
+.stats-grid{max-width:800px;margin:56px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+@media(max-width:560px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+.stat{border:1px solid var(--border);padding:40px 16px;text-align:center;}
+.stat-n{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:3.2rem;color:var(--orange);line-height:1;margin-bottom:8px;}
+.stat-l{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);}
+
+/* ── CTA ── */
+.cta{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 24px;position:relative;overflow:hidden;}
+.cta-glow{position:absolute;width:900px;height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 65%);pointer-events:none;}
+.cta h2{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:clamp(3rem,12vw,8rem);line-height:0.92;letter-spacing:-0.02em;text-transform:uppercase;position:relative;z-index:2;margin-bottom:28px;}
+.cta h2 .o{-webkit-text-fill-color:transparent;-webkit-text-stroke:2px var(--orange);}
+.cta-url{font-family:'Barlow Condensed',sans-serif;font-size:clamp(1rem,3.5vw,1.8rem);font-weight:300;letter-spacing:0.18em;color:var(--orange);position:relative;z-index:2;text-decoration:none;margin-bottom:40px;display:block;}
+.cta-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;position:relative;z-index:2;}
+
+/* ── FOOTER ── */
+footer{background:#030406;border-top:1px solid var(--border);padding:56px 32px 32px;}
+.footer-inner{max-width:960px;margin:0 auto;}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+@media(max-width:680px){.footer-top{grid-template-columns:1fr 1fr;gap:32px;}}
+@media(max-width:420px){.footer-top{grid-template-columns:1fr;}}
+.f-brand-name{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.3rem;letter-spacing:0.1em;margin-bottom:10px;}
+.f-brand-name span{color:var(--orange);}
+.f-brand-desc{font-size:0.82rem;color:var(--muted);line-height:1.7;max-width:220px;}
+.f-col h4{font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);margin-bottom:14px;}
+.f-col a{display:block;font-size:0.85rem;color:#6a7a8a;text-decoration:none;margin-bottom:9px;transition:color 0.2s;}
+.f-col a:hover{color:var(--orange);}
+.footer-bottom{border-top:1px solid var(--border);padding-top:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.f-legal{font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);}
+.f-legal-links{display:flex;gap:18px;}
+.f-legal-links a{font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color 0.2s;}
+.f-legal-links a:hover{color:var(--orange);}
 </style>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-2RZW8ZX6TV"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-2RZW8ZX6TV');
+</script>
 </head>
 <body>
 
-<!-- Memberstack -->
-<script data-memberstack-app="app_cmtt1sudl006y0stu6l1h8b1l" src="https://static.memberstack.com/scripts/v2/memberstack.js" type="text/javascript"></script>
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-brand">
+    <div class="nav-bars">
+      <div class="nb"></div><div class="nb"></div><div class="nb"></div>
+      <div class="nb"></div><div class="nb"></div>
+    </div>
+    <span class="nav-name">SCENE <span>SOUNDS</span></span>
+  </a>
+  <a href="https://scenesounds.app" class="nav-btn" target="_blank">Launch App →</a>
+</nav>
 
-<!-- AUTH SCREEN -->
-<div id="authScreen" style="
-  position:fixed;inset:0;z-index:9999;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:32px;
-">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,107,53,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,53,0.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;"></div>
-  <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="glow-a"></div>
+  <div class="glow-b"></div>
+  <div class="hero-inner">
+    <div class="hero-wave">
+      <div class="hw"></div><div class="hw"></div><div class="hw"></div>
+      <div class="hw"></div><div class="hw"></div><div class="hw"></div>
+      <div class="hw"></div><div class="hw"></div><div class="hw"></div>
+    </div>
+    <p class="hero-tag">Introducing</p>
+    <h1 class="hero-h1">
+      Scene<span class="outline">Sounds</span>
+    </h1>
+    <p class="hero-sub">Scenario with Sound</p>
+    <div class="hero-actions">
+      <a href="https://scenesounds.app" class="btn-primary" target="_blank">Try It Free</a>
+      <a href="#features" class="btn-secondary">Learn More ↓</a>
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-line"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
 
-  <div style="position:relative;z-index:2;text-align:center;width:100%;max-width:340px;">
-    <!-- Logo -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:32px;">
-      <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
-        <rect x="10" y="35" width="10" height="30" rx="5" fill="#ff6b35"/>
-        <rect x="25" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-        <rect x="40" y="10" width="10" height="80" rx="5" fill="#ff6b35"/>
-        <rect x="55" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-        <rect x="70" y="35" width="10" height="30" rx="5" fill="#ff6b35" opacity="0.7"/>
-        <rect x="85" y="42" width="10" height="16" rx="5" fill="#ff6b35" opacity="0.5"/>
-      </svg>
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="section-center">
+    <p class="eyebrow rv">The Problem</p>
+    <h2 class="big-h rv d1">Scenarios<br>shouldn't be <em>silent.</em></h2>
+    <p class="body-text rv d2">Every year, thousands of first aiders and emergency responders train to manage medical and traumatic emergencies. They learn the procedure. They learn the anatomy. But often they train in a classroom — quiet, calm, and nothing like the environments they will actually work in.</p>
+    <p class="body-text rv d3" style="margin-top:16px;">Under real conditions — sirens, wind, rain, explosions, screaming casualties, animals, radio traffic and more — the cognitive load spikes and fine motor skills degrade. Trainees who perform flawlessly in a classroom can often freeze or fumble in the field.</p>
+  </div>
+</section>
+
+<!-- APP PREVIEW — moved here between problem and solution -->
+<section class="preview">
+  <div style="max-width:1000px;margin:0 auto;display:flex;justify-content:center;align-items:center;padding:0 24px;">
+    <div class="phone rv">
+      <div class="phone-wrap">
+        <div class="phone-notch"></div>
+        <div class="phone-hdr">
+          <div class="phone-wave">
+            <div class="pw"></div><div class="pw"></div><div class="pw"></div>
+            <div class="pw"></div><div class="pw"></div>
+          </div>
+          <span class="phone-status">● 3 ACTIVE</span>
+        </div>
+        <div class="phone-grid">
+          <div class="pb a1">🚨 Siren</div>
+          <div class="pb">🔥 Fire</div>
+          <div class="pb a2">❤️ Pulse</div>
+          <div class="pb a1">📢 Crowd</div>
+          <div class="pb">🌧️ Rain</div>
+          <div class="pb">💥 Blast</div>
+          <div class="pb a2">🚁 Helo</div>
+          <div class="pb">📡 Radio</div>
+          <div class="pb">🔫 Shots</div>
+        </div>
+        <div class="phone-mixer">
+          <div class="mix-row">
+            <div class="mix-dot" style="background:var(--orange)"></div>
+            <span class="mix-lbl">Siren</span>
+            <div class="mix-track"><div class="mix-fill" style="background:var(--orange);width:75%"></div></div>
+          </div>
+          <div class="mix-row">
+            <div class="mix-dot" style="background:var(--teal)"></div>
+            <span class="mix-lbl">Heartbeat</span>
+            <div class="mix-track"><div class="mix-fill" style="background:var(--teal);animation-delay:0.5s"></div></div>
+          </div>
+          <div class="mix-row">
+            <div class="mix-dot" style="background:var(--blue)"></div>
+            <span class="mix-lbl">Crowd</span>
+            <div class="mix-track"><div class="mix-fill" style="background:var(--blue);animation-delay:1s;width:45%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="preview" style="background:var(--bg);">
+  <div class="preview-inner">
+    <div class="preview-copy rv">
+      <p class="eyebrow" style="text-align:left;margin-bottom:14px;">The Solution</p>
+      <h2>One tap.<br>Full scene.</h2>
+      <p>Scene Sounds is a purpose-built audio training platform. Instructors can use realistic layered soundscapes or pre-populated scenario sounds — RTC scenes, mass casualty incidents, battlefield chaos — and trainees perform their skills under genuine cognitive pressure.</p>
+      <p>It runs on any phone, tablet, or laptop. No hardware. No setup. One tap loads a full scenario. Individual sound layers are adjustable in real time so instructors can escalate or de-escalate the environment during the exercise.</p>
+      <a href="https://scenesounds.app" class="btn-primary" style="display:inline-block;margin-top:32px;" target="_blank">Open the App</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- MANIKINS ALIVE SECTION -->
+<section style="background:#07090c;padding:60px 24px 80px;overflow:hidden;">
+  <div style="max-width:960px;margin:0 auto;">
+
+    <!-- Header -->
+    <div class="rv" style="text-align:center;margin-bottom:52px;">
+      <p class="eyebrow">See It In Action</p>
+      <h2 class="big-h" style="font-size:clamp(2rem,6vw,3.8rem);">Bringing your<br><em>manikins alive.</em></h2>
+      <p style="color:var(--muted);font-size:0.95rem;max-width:500px;margin:16px auto 0;line-height:1.7;">One tap on your phone or tablet. A full scene plays instantly. Your manikin becomes a real patient.</p>
+    </div>
+
+    <!-- Device + Media layout — 3 column grid, device above, line, video below -->
+    <div class="rv d1">
+      <div class="manikin-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto;align-items:start;">
+
+        <!-- COL 1 — Baby Crying — left phone -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <!-- Phone -->
+          <div style="background:#111418;border:2px solid #252b35;border-radius:24px;padding:10px 8px;width:90px;box-shadow:0 16px 48px rgba(0,0,0,0.6),0 0 30px rgba(0,201,167,0.1);flex-shrink:0;" class="device-phone">
+            <div style="width:36px;height:5px;background:#1a1f28;border-radius:3px;margin:0 auto 8px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 5px;border-bottom:1px solid #1a1f28;margin-bottom:5px;">
+              <div style="display:flex;gap:1.5px;align-items:center;">
+                <div style="width:2px;height:5px;background:#00c9a7;border-radius:1px;animation:wb 1.4s ease-in-out 0s infinite;"></div>
+                <div style="width:2px;height:8px;background:#00c9a7;border-radius:1px;animation:wb 1.4s ease-in-out 0.15s infinite;"></div>
+                <div style="width:2px;height:11px;background:#00c9a7;border-radius:1px;animation:wb 1.4s ease-in-out 0.3s infinite;"></div>
+                <div style="width:2px;height:8px;background:#00c9a7;border-radius:1px;animation:wb 1.4s ease-in-out 0.45s infinite;"></div>
+                <div style="width:2px;height:5px;background:#00c9a7;border-radius:1px;animation:wb 1.4s ease-in-out 0.6s infinite;"></div>
+              </div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.34rem;color:#00c9a7;letter-spacing:0.06em;">BABY CRYING</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:4px;">
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #00c9a7;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#00c9a7;animation:pa2 2s ease-in-out infinite;">👶 Baby</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">😢 Cry</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">🚑 Siren</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">👥 Crowd</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">📡 Radio</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">🌧️ Rain</div>
+            </div>
+            <div style="background:#1a1f28;border-radius:3px;padding:3px 4px;border:1px solid #252b35;">
+              <div style="display:flex;align-items:center;gap:2px;margin-bottom:2px;">
+                <div style="width:3px;height:3px;border-radius:50%;background:#00c9a7;flex-shrink:0;"></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#8a9ab0;width:22px;">Baby</span>
+                <div style="flex:1;height:1.5px;background:#252b35;border-radius:1px;"><div style="height:100%;background:#00c9a7;width:90%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- Straight line down -->
+          <svg width="2" height="36"><line x1="1" y1="0" x2="1" y2="32" stroke="#00c9a7" stroke-width="1.5" stroke-dasharray="4,3"/><polygon points="0,28 2,28 1,36" fill="#00c9a7"/></svg>
+          <!-- Video card -->
+          <div onclick="toggleVideo(this)" data-color="#00c9a7" style="width:100%;background:#0f1318;border:1px solid rgba(0,201,167,0.25);border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.5);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position:relative;">
+              <video preload="metadata" playsinline style="width:100%;display:block;border-radius:12px 12px 0 0;aspect-ratio:4/3;object-fit:cover;" src="baby-crying.mp4#t=0.1"></video>
+              <div class="play-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;"><div class="overlay-icon"><div style="width:56px;height:56px;border-radius:50%;border:1.5px solid #ff6b35;background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;opacity:0.55;"><div style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #ff6b35;margin-left:4px;"></div></div></div>
+              </div>
+              
+            </div>
+            <div style="padding:10px 12px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;color:#f0f2f5;">Baby Crying</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL 2 — Adult Wheeze & Cough — tablet -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <!-- Tablet -->
+          <div style="background:#111418;border:2px solid #252b35;border-radius:16px;padding:8px;width:180px;box-shadow:0 24px 64px rgba(0,0,0,0.7),0 0 50px rgba(255,107,53,0.1);flex-shrink:0;" class="device-tablet">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 5px;border-bottom:1px solid #1a1f28;margin-bottom:6px;">
+              <div style="display:flex;gap:2px;align-items:center;">
+                <div style="width:2.5px;height:5px;background:#ff6b35;border-radius:1px;animation:wb 1.4s ease-in-out 0s infinite;"></div>
+                <div style="width:2.5px;height:9px;background:#ff6b35;border-radius:1px;animation:wb 1.4s ease-in-out 0.15s infinite;"></div>
+                <div style="width:2.5px;height:13px;background:#ff6b35;border-radius:1px;animation:wb 1.4s ease-in-out 0.3s infinite;"></div>
+                <div style="width:2.5px;height:9px;background:#ff6b35;border-radius:1px;animation:wb 1.4s ease-in-out 0.45s infinite;"></div>
+                <div style="width:2.5px;height:5px;background:#ff6b35;border-radius:1px;animation:wb 1.4s ease-in-out 0.6s infinite;"></div>
+              </div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.4rem;color:#ff6b35;letter-spacing:0.08em;">SCENE SOUNDS</span>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.34rem;color:#00c9a7;">● 2 ACTIVE</span>
+            </div>
+            <div style="background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.4);border-radius:5px;padding:4px 6px;margin-bottom:5px;display:flex;align-items:center;gap:5px;">
+              <span style="font-size:0.6rem;">🫁</span>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.4rem;font-weight:700;color:#ff6b35;letter-spacing:0.06em;">WHEEZE &amp; COUGH</div>
+              <div style="margin-left:auto;width:13px;height:13px;border-radius:50%;background:#ff6b35;display:flex;align-items:center;justify-content:center;"><span style="color:#07090c;font-size:0.35rem;">▶</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:5px;">
+              <div style="background:#1a1f28;border-radius:3px;padding:4px 2px;text-align:center;border:1px solid #ff6b35;animation:pa 1.5s ease-in-out infinite;"><div style="font-size:0.45rem;">🫁</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:0.24rem;color:#ff6b35;margin-top:1px;">Wheeze</div></div>
+              <div style="background:#1a1f28;border-radius:3px;padding:4px 2px;text-align:center;border:1px solid #00c9a7;animation:pa2 2s ease-in-out infinite;"><div style="font-size:0.45rem;">🤧</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:0.24rem;color:#00c9a7;margin-top:1px;">Cough</div></div>
+              <div style="background:#1a1f28;border-radius:3px;padding:4px 2px;text-align:center;border:1px solid #252b35;"><div style="font-size:0.45rem;">🚑</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:0.24rem;color:#5a6270;margin-top:1px;">Siren</div></div>
+              <div style="background:#1a1f28;border-radius:3px;padding:4px 2px;text-align:center;border:1px solid #252b35;"><div style="font-size:0.45rem;">👥</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:0.24rem;color:#5a6270;margin-top:1px;">Crowd</div></div>
+            </div>
+            <div style="background:#1a1f28;border-radius:4px;padding:4px 5px;border:1px solid #252b35;">
+              <div style="display:flex;align-items:center;gap:3px;margin-bottom:2px;">
+                <div style="width:4px;height:4px;border-radius:50%;background:#ff6b35;flex-shrink:0;"></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.28rem;color:#8a9ab0;width:28px;">Wheeze</span>
+                <div style="flex:1;height:1.5px;background:#252b35;border-radius:1px;"><div style="height:100%;width:85%;background:#ff6b35;"></div></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">85%</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:3px;">
+                <div style="width:4px;height:4px;border-radius:50%;background:#00c9a7;flex-shrink:0;"></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.28rem;color:#8a9ab0;width:28px;">Cough</span>
+                <div style="flex:1;height:1.5px;background:#252b35;border-radius:1px;"><div style="height:100%;width:70%;background:#00c9a7;"></div></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">70%</span>
+              </div>
+            </div>
+          </div>
+          <!-- Straight line down -->
+          <svg width="2" height="36"><line x1="1" y1="0" x2="1" y2="32" stroke="#ff6b35" stroke-width="1.5" stroke-dasharray="4,3"/><polygon points="0,28 2,28 1,36" fill="#ff6b35"/></svg>
+          <!-- Video card -->
+          <div onclick="toggleVideo(this)" data-color="#ff6b35" style="width:100%;background:#0f1318;border:1px solid rgba(255,107,53,0.35);border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.5),0 0 20px rgba(255,107,53,0.06);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position:relative;">
+              <video preload="metadata" playsinline style="width:100%;display:block;border-radius:12px 12px 0 0;aspect-ratio:4/3;object-fit:cover;" src="adult-wheeze-cough.mp4#t=0.1"></video>
+              <div class="play-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;"><div class="overlay-icon"><div style="width:56px;height:56px;border-radius:50%;border:1.5px solid #ff6b35;background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;opacity:0.55;"><div style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #ff6b35;margin-left:4px;"></div></div></div>
+              </div>
+              
+            </div>
+            <div style="padding:10px 12px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;color:#f0f2f5;">Adult Wheeze &amp; Cough</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COL 3 — Upper Airway Obstruction — right phone -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+          <!-- Phone -->
+          <div style="background:#111418;border:2px solid #252b35;border-radius:24px;padding:10px 8px;width:90px;box-shadow:0 16px 48px rgba(0,0,0,0.6),0 0 30px rgba(244,114,182,0.08);flex-shrink:0;" class="device-phone">
+            <div style="width:36px;height:5px;background:#1a1f28;border-radius:3px;margin:0 auto 8px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 5px;border-bottom:1px solid #1a1f28;margin-bottom:5px;">
+              <div style="display:flex;gap:1.5px;align-items:center;">
+                <div style="width:2px;height:5px;background:#f472b6;border-radius:1px;animation:wb 1.4s ease-in-out 0s infinite;"></div>
+                <div style="width:2px;height:8px;background:#f472b6;border-radius:1px;animation:wb 1.4s ease-in-out 0.2s infinite;"></div>
+                <div style="width:2px;height:11px;background:#f472b6;border-radius:1px;animation:wb 1.4s ease-in-out 0.4s infinite;"></div>
+                <div style="width:2px;height:8px;background:#f472b6;border-radius:1px;animation:wb 1.4s ease-in-out 0.6s infinite;"></div>
+                <div style="width:2px;height:5px;background:#f472b6;border-radius:1px;animation:wb 1.4s ease-in-out 0.8s infinite;"></div>
+              </div>
+              <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.3rem;color:#f472b6;letter-spacing:0.04em;">AIRWAY</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-bottom:4px;">
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #f472b6;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#f472b6;animation:pa 1.5s ease-in-out infinite;">🌬️ Strid</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #f472b6;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#f472b6;animation:pa2 2s ease-in-out infinite;">😴 Snore</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">🫁 Wheeze</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">🚑 Siren</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">👥 Crowd</div>
+              <div style="background:#1a1f28;border-radius:3px;padding:3px 1px;text-align:center;border:1px solid #252b35;font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#5a6270;">📡 Radio</div>
+            </div>
+            <div style="background:#1a1f28;border-radius:3px;padding:3px 4px;border:1px solid #252b35;">
+              <div style="display:flex;align-items:center;gap:2px;">
+                <div style="width:3px;height:3px;border-radius:50%;background:#f472b6;flex-shrink:0;"></div>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.26rem;color:#8a9ab0;width:24px;">Stridor</span>
+                <div style="flex:1;height:1.5px;background:#252b35;border-radius:1px;"><div style="height:100%;background:#f472b6;width:85%;"></div></div>
+              </div>
+            </div>
+          </div>
+          <!-- Straight line down -->
+          <svg width="2" height="36"><line x1="1" y1="0" x2="1" y2="32" stroke="#f472b6" stroke-width="1.5" stroke-dasharray="4,3"/><polygon points="0,28 2,28 1,36" fill="#f472b6"/></svg>
+          <!-- Video card -->
+          <div onclick="toggleVideo(this)" data-color="#f472b6" style="width:100%;background:#0f1318;border:1px solid rgba(244,114,182,0.3);border-radius:12px;overflow:hidden;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,0.5);transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+            <div style="position:relative;">
+              <video preload="metadata" playsinline style="width:100%;display:block;border-radius:12px 12px 0 0;aspect-ratio:4/3;object-fit:cover;" src="upper-airway-obstruction.mp4#t=0.1"></video>
+              <div class="play-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.22);display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;"><div class="overlay-icon"><div style="width:56px;height:56px;border-radius:50%;border:1.5px solid #f472b6;background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;opacity:0.55;"><div style="width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid #f472b6;margin-left:4px;"></div></div></div>
+              </div>
+              
+            </div>
+            <div style="padding:10px 12px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;color:#f0f2f5;">Airway Obstruction</div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- end grid -->
+
+      <script>
+      function toggleVideo(card) {
+        const video = card.querySelector('video');
+        const overlay = card.querySelector('.play-overlay');
+        const col = card.dataset.color || '#ff6b35';
+        if (video.paused) {
+          // Pause all other videos first
+          document.querySelectorAll('.manikin-grid video').forEach(v => {
+            if (v !== video) {
+              v.pause();
+              const c = v.closest('[onclick]');
+              if (c) {
+                const o = c.querySelector('.play-overlay');
+                if (o) {
+                  o.style.display = 'flex';
+                  o.style.background = 'rgba(0,0,0,0.22)';
+                  const ic = o.querySelector('.overlay-icon');
+                  if (ic) ic.innerHTML = playIcon(c.dataset.color || '#ff6b35');
+                }
+              }
+            }
+          });
+          video.loop = true;
+          video.muted = false;
+          video.play();
+          // Show semi-transparent pause on overlay, very subtle
+          overlay.style.display = 'flex';
+          overlay.style.background = 'rgba(0,0,0,0)';
+          const ic = overlay.querySelector('.overlay-icon');
+          if (ic) ic.innerHTML = pauseIcon(col);
+        } else {
+          video.pause();
+          overlay.style.display = 'flex';
+          overlay.style.background = 'rgba(0,0,0,0.22)';
+          const ic = overlay.querySelector('.overlay-icon');
+          if (ic) ic.innerHTML = playIcon(col);
+        }
+      }
+
+      function playIcon(col) {
+        return `<div style="width:56px;height:56px;border-radius:50%;border:1.5px solid ${col};background:rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;opacity:0.55;"><div style="width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;border-left:14px solid ${col};margin-left:3px;"></div></div>`;
+      }
+
+      function pauseIcon(col) {
+        return `<div style="width:56px;height:56px;border-radius:50%;border:2px solid ${col};background:rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:center;opacity:0.5;gap:5px;backdrop-filter:blur(2px);"><div style="width:5px;height:18px;background:${col};border-radius:2px;"></div><div style="width:5px;height:18px;background:${col};border-radius:2px;"></div></div>`;
+      }
+      </script>
+
+    </div>
+
+<!-- SCENARIOS TICKER -->
+<section class="ticker-section">
+  <div class="ticker-hdr">
+    <p class="eyebrow rv">Built-in scenarios</p>
+    <h2 class="big-h rv d1" style="font-size:clamp(1.8rem,5vw,3rem);">Every scene.<br>Every sound. <em>Every time.</em></h2>
+  </div>
+  <div class="ticker-track">
+    <div class="chip"><span class="chip-ico">🚗</span><span class="chip-lbl">Road Traffic Collision</span></div>
+    <div class="chip"><span class="chip-ico">❤️</span><span class="chip-lbl">Cardiac Arrest</span></div>
+    <div class="chip"><span class="chip-ico">🔥</span><span class="chip-lbl">Structure Fire</span></div>
+    <div class="chip"><span class="chip-ico">🚨</span><span class="chip-lbl">Active Shooter</span></div>
+    <div class="chip"><span class="chip-ico">🏥</span><span class="chip-lbl">Mass Casualty</span></div>
+    <div class="chip"><span class="chip-ico">💣</span><span class="chip-lbl">IED Strike</span></div>
+    <div class="chip"><span class="chip-ico">🚁</span><span class="chip-lbl">MEDEVAC Extraction</span></div>
+    <div class="chip"><span class="chip-ico">☣️</span><span class="chip-lbl">Hazmat Incident</span></div>
+    <div class="chip"><span class="chip-ico">🌪️</span><span class="chip-lbl">FOB Ambush</span></div>
+    <div class="chip"><span class="chip-ico">✈️</span><span class="chip-lbl">CAS Air Support</span></div>
+    <div class="chip"><span class="chip-ico">🚗</span><span class="chip-lbl">Road Traffic Collision</span></div>
+    <div class="chip"><span class="chip-ico">❤️</span><span class="chip-lbl">Cardiac Arrest</span></div>
+    <div class="chip"><span class="chip-ico">🔥</span><span class="chip-lbl">Structure Fire</span></div>
+    <div class="chip"><span class="chip-ico">🚨</span><span class="chip-lbl">Active Shooter</span></div>
+    <div class="chip"><span class="chip-ico">🏥</span><span class="chip-lbl">Mass Casualty</span></div>
+    <div class="chip"><span class="chip-ico">💣</span><span class="chip-lbl">IED Strike</span></div>
+    <div class="chip"><span class="chip-ico">🚁</span><span class="chip-lbl">MEDEVAC Extraction</span></div>
+    <div class="chip"><span class="chip-ico">☣️</span><span class="chip-lbl">Hazmat Incident</span></div>
+    <div class="chip"><span class="chip-ico">🌪️</span><span class="chip-lbl">FOB Ambush</span></div>
+    <div class="chip"><span class="chip-ico">✈️</span><span class="chip-lbl">CAS Air Support</span></div>
+  </div>
+</section>
+
+<!-- WHO IS IT FOR -->
+<section class="who">
+  <div class="section-center">
+    <p class="eyebrow rv">Who it's for</p>
+    <h2 class="big-h rv d1">Built for the people<br>who run <em>toward it.</em></h2>
+  </div>
+  <div class="who-grid">
+    <div class="who-card rv d1">
+      <div class="who-title">Emergency Services</div>
+      <p class="who-desc">Paramedics, firefighters, police officers and first aid instructors — train under realistic sensory pressure before you ever arrive on scene.</p>
+    </div>
+    <div class="who-card rv d2">
+      <div class="who-title">Military & TCCC</div>
+      <p class="who-desc">Combat medics, infantry, field surgeons — TCCC, BATLS, TECC. IED strikes, active contact, MEDEVAC extraction and battle comms.</p>
+    </div>
+    <div class="who-card rv d3">
+      <div class="who-title">Healthcare & Clinical</div>
+      <p class="who-desc">Nurses, doctors, paramedic students — clinical auscultation, patient distress, and ward environments that replicate real assessment conditions.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" style="background:var(--bg);padding:80px 24px;">
+  <div class="section-center">
+    <p class="eyebrow rv">What Instructors Are Saying</p>
+    <h2 class="big-h rv d1">Real feedback.<br><em>From real trainers.</em></h2>
+  </div>
+
+  <div class="testi-scroll rv d2">
+    <div class="testi-track">
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Great idea. I really like that you can layer the sounds."</p>
+      <div class="testi-name">Lucy Repos</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Great so far, well done."</p>
+      <div class="testi-name">Ann Osborn</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"This is really, really good. Very useful indeed."</p>
+      <div class="testi-name">P3 First Aid Training</div>
+      <div class="testi-role">Training Provider</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Absolutely fantastic resource. I especially like the scenarios."</p>
+      <div class="testi-name">MERTS</div>
+      <div class="testi-role">Medical Emergency Response Training</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Fantastic. As a nurse I would love to be able to use the medical sounds too. Will definitely be using this a lot."</p>
+      <div class="testi-name">Denise Kindleysides</div>
+      <div class="testi-role">Nurse</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I think this is great and will really help people enhance their scenario work. I have already started using it in my pre-hospital care."</p>
+      <div class="testi-name">Craig Taylor</div>
+      <div class="testi-role">Paramedic</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Fabulous idea to enhance training scenarios."</p>
+      <div class="testi-name">Candice Manby</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"This is brilliant! Thanks for sharing!"</p>
+      <div class="testi-name">Debs Taylor</div>
+      <div class="testi-role">First Aid Trainer</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Already recommended this to our first aid training team. This is fantastic."</p>
+      <div class="testi-name">Fern Denner</div>
+      <div class="testi-role">Medical Support Officer</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Excellent."</p>
+      <div class="testi-name">Anthony Jemmott</div>
+      <div class="testi-role">Nurse, NHS</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Great idea. I really like that you can layer the sounds."</p>
+      <div class="testi-name">Lucy Repos</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Great so far, well done."</p>
+      <div class="testi-name">Ann Osborn</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"This is really, really good. Very useful indeed."</p>
+      <div class="testi-name">P3 First Aid Training</div>
+      <div class="testi-role">Training Provider</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Absolutely fantastic resource. I especially like the scenarios."</p>
+      <div class="testi-name">MERTS</div>
+      <div class="testi-role">Medical Emergency Response Training</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Fantastic. As a nurse I would love to be able to use the medical sounds too. Will definitely be using this a lot."</p>
+      <div class="testi-name">Denise Kindleysides</div>
+      <div class="testi-role">Nurse</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I think this is great and will really help people enhance their scenario work. I have already started using it in my pre-hospital care."</p>
+      <div class="testi-name">Craig Taylor</div>
+      <div class="testi-role">Paramedic</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Fabulous idea to enhance training scenarios."</p>
+      <div class="testi-name">Candice Manby</div>
+      <div class="testi-role">First Aid Instructor</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"This is brilliant! Thanks for sharing!"</p>
+      <div class="testi-name">Debs Taylor</div>
+      <div class="testi-role">First Aid Trainer</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Already recommended this to our first aid training team. This is fantastic."</p>
+      <div class="testi-name">Fern Denner</div>
+      <div class="testi-role">Medical Support Officer</div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Excellent."</p>
+      <div class="testi-name">Anthony Jemmott</div>
+      <div class="testi-role">Nurse, NHS</div>
+    </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="section-center">
+    <p class="eyebrow rv">By the numbers</p>
+  </div>
+  <div class="stats-grid rv d1">
+    <div class="stat"><div class="stat-n">85</div><div class="stat-l">Sound Effects</div></div>
+    <div class="stat"><div class="stat-n">11</div><div class="stat-l">Scenarios</div></div>
+    <div class="stat"><div class="stat-n">6</div><div class="stat-l">Categories</div></div>
+    <div class="stat"><div class="stat-n">∞</div><div class="stat-l">Custom Mixes</div></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section style="background:#07090c;padding:80px 24px 100px;" id="pricing">
+  <div style="max-width:900px;margin:0 auto;">
+
+    <p class="eyebrow rv" style="margin-bottom:12px;">Pricing</p>
+    <h2 class="big-h rv d1" style="margin-bottom:8px;">Start free.<br><em>Upgrade when you're ready.</em></h2>
+    <p class="rv d2" style="color:var(--muted);font-size:0.95rem;max-width:480px;margin-bottom:56px;line-height:1.7;">No contracts, no hidden fees. Free accounts never expire. Pro is less than a coffee a month.</p>
+
+    <!-- FREE + PRO side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:2px;">
+
+      <!-- FREE -->
+      <div class="rv d1" style="background:#0f1318;padding:40px 36px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Free forever</p>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:4.5rem;color:var(--text);line-height:1;margin-bottom:24px;">£0</div>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:28px;">Try the platform with no commitment. A good way to see if it fits your training style before you spend anything.</p>
+        <div style="border-top:1px solid var(--border);padding-top:24px;margin-bottom:32px;">
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">6 sounds per category</p>
+          <p style="font-size:0.82rem;color:var(--muted);margin-bottom:8px;">2 built-in scenarios</p>
+          <p style="font-size:0.82rem;color:var(--muted);">Any device, no install</p>
+        </div>
+        <a href="https://scenesounds.app" target="_blank" style="display:inline-block;padding:11px 28px;border:1px solid var(--border);border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;color:var(--muted);text-decoration:none;text-transform:uppercase;">Open the app</a>
+      </div>
+
+      <!-- PRO -->
+      <div class="rv d2" style="background:#111408;padding:40px 36px;border-left:3px solid var(--orange);position:relative;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--orange);margin-bottom:20px;">Pro</p>
+        <div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:24px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:4.5rem;color:var(--text);line-height:1;">£3.99</div>
+          <div style="font-size:0.9rem;color:var(--muted);padding-bottom:10px;">per month · or £39.00/year</div>
+        </div>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;margin-bottom:28px;">Everything unlocked. Full sound library, all scenarios, the custom builder. Built for instructors who use it regularly.</p>
+        <div style="border-top:1px solid rgba(255,107,53,0.2);padding-top:24px;margin-bottom:32px;">
+          <p style="font-size:0.82rem;color:var(--text);margin-bottom:8px;">All 85+ sounds across 6 categories</p>
+          <p style="font-size:0.82rem;color:var(--text);margin-bottom:8px;">All 11 built-in scenarios</p>
+          <p style="font-size:0.82rem;color:var(--text);margin-bottom:8px;">Custom scenario builder</p>
+          <p style="font-size:0.82rem;color:var(--text);">Live sound mixer</p>
+        </div>
+        <a href="https://scenesounds.app" target="_blank" style="display:inline-block;padding:12px 32px;background:var(--orange);border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.9rem;letter-spacing:0.1em;color:#0a0c0f;text-decoration:none;text-transform:uppercase;">Start Pro</a>
+      </div>
+    </div>
+
+    <!-- ENTERPRISE full width -->
+    <div class="rv d3" style="background:#0f1318;padding:40px 36px;display:flex;align-items:flex-start;gap:48px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:220px;">
+        <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">For organisations</p>
+        <h3 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;color:var(--text);line-height:1;margin-bottom:12px;">Bespoke licensing</h3>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.7;">For ambulance services, cadet forces, NHS trusts and training providers who need a branded version, bulk access or a managed contract. Pricing reflects your organisation's size and requirements.</p>
+      </div>
+      <div style="flex:1;min-width:240px;">
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:6px;">Your branding, your subdomain</p>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:6px;">Bulk user management</p>
+        <p style="font-size:0.82rem;color:var(--muted);margin-bottom:24px;">Annual licence with support included</p>
+        <div id="enterpriseForm" style="display:none;">
+          <input id="entName" type="text" placeholder="Your name" style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;font-family:'Barlow',sans-serif;font-size:0.85rem;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+          <input id="entEmail" type="email" placeholder="Work email" style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:8px;font-family:'Barlow',sans-serif;font-size:0.85rem;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+          <input id="entOrg" type="text" placeholder="Organisation" style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.85rem;color:var(--text);outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--orange)'" onblur="this.style.borderColor='var(--border)'">
+          <button onclick="submitEnterprise()" style="background:var(--orange);color:#0a0c0f;border:none;border-radius:6px;padding:11px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.1em;cursor:pointer;text-transform:uppercase;">Send enquiry</button>
+          <p id="entMsg" style="font-size:0.78rem;margin-top:10px;min-height:14px;font-family:'Barlow Condensed',sans-serif;"></p>
+        </div>
+        <button id="entBtn" onclick="document.getElementById('enterpriseForm').style.display='block';this.style.display='none';" style="background:transparent;border:1px solid var(--border);border-radius:6px;padding:11px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;color:var(--muted);cursor:pointer;text-transform:uppercase;">Get in touch</button>
+      </div>
+    </div>
+
+  </div>
+  <style>
+    @media(max-width:640px){
+      #pricing [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+      #pricing [style*="padding:40px 36px"]{padding:28px 20px!important;}
+      #pricing [style*="gap:48px"]{gap:24px!important;}
+    }
+  </style>
+</section>
+
+<script>
+function submitEnterprise() {
+  const name = document.getElementById('entName').value.trim();
+  const email = document.getElementById('entEmail').value.trim();
+  const org = document.getElementById('entOrg').value.trim();
+  const msg = document.getElementById('entMsg');
+  if (!name || !email || !org) { msg.textContent = 'Please fill in all fields'; msg.style.color = '#ff4444'; return; }
+  window.location.href = `mailto:info@scenesounds.app?subject=Organisation enquiry from ${org}&body=Name: ${name}%0AEmail: ${email}%0AOrganisation: ${org}`;
+  msg.textContent = 'Thanks, we will be in touch shortly.';
+  msg.style.color = '#3bba6e';
+}
+</script>
+
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-glow"></div>
+  <h2 class="rv">Scenario<br><span class="o">with Sound</span></h2>
+  <a href="https://scenesounds.app" class="cta-url rv d1" target="_blank">scenesounds.app</a>
+  <div class="cta-btns rv d2">
+    <a href="https://scenesounds.app" class="btn-primary" target="_blank">Try It Free</a>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;letter-spacing:0.1em;color:var(--text);line-height:1;">SCENE <span style="color:var(--fire);">SOUNDS</span></div>
-        <div style="font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:2px;">Scenario with Sound</div>
+        <div class="f-brand-name">SCENE <span>SOUNDS</span></div>
+        <p class="f-brand-desc">Scenario with Sound for emergency services, military and healthcare professionals worldwide.</p>
+      </div>
+      <div class="f-col">
+        <h4>App</h4>
+        <a href="https://scenesounds.app" target="_blank">Launch App</a>
+      </div>
+      <div class="f-col">
+        <h4>Training</h4>
+        <a href="https://scenesounds.app">Medical</a>
+        <a href="https://scenesounds.app">Military / TCCC</a>
+        <a href="https://scenesounds.app">Fire & Rescue</a>
+        <a href="https://scenesounds.app">Clinical</a>
+      </div>
+      <div class="f-col">
+        <h4>Legal</h4>
+        <a href="/terms.html">Terms of Use</a>
+        <a href="/privacy.html">Privacy Policy</a>
       </div>
     </div>
-
-    <!-- Tab switcher -->
-    <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;gap:4px;">
-      <button id="tabLogin" onclick="showTab('login')" style="flex:1;padding:9px;border:none;border-radius:7px;background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">LOG IN</button>
-      <button id="tabSignup" onclick="showTab('signup')" style="flex:1;padding:9px;border:none;border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">SIGN UP</button>
-    </div>
-
-    <!-- Login form -->
-    <div id="formLogin" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-      <input id="loginEmail" type="email" placeholder="Email address" autocomplete="email"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter')doLogin()"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <button onclick="doLogin()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Log In</button>
-      <p id="loginError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-      <a href="#" onclick="doForgotPassword()" style="display:block;margin-top:8px;font-size:0.75rem;color:var(--muted);text-decoration:none;">Forgot password?</a>
-    </div>
-
-    <!-- Signup form -->
-    <div id="formSignup" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-      <input id="signupName" type="text" placeholder="Full name" autocomplete="name"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="signupEmail" type="email" placeholder="Email address" autocomplete="email"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="signupPassword" type="password" placeholder="Create password" autocomplete="new-password"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;text-align:left;">
-        <input type="checkbox" id="tcBoxSignup" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--fire);cursor:pointer;">
-        <label for="tcBoxSignup" style="font-family:'Barlow',sans-serif;font-size:0.78rem;color:var(--muted);line-height:1.5;cursor:pointer;">
-          I agree to the <a href="https://scenesounds.com/terms.html" target="_blank" style="color:var(--fire);text-decoration:none;">Terms of Use</a> and <a href="https://scenesounds.com/privacy.html" target="_blank" style="color:var(--fire);text-decoration:none;">Privacy Policy</a>
-        </label>
+    <div class="footer-bottom">
+      <div class="f-legal">SceneSounds.com &nbsp;|&nbsp; Sector 3 Group Ltd &nbsp;|&nbsp; Company Reg: 16566947</div>
+      <div class="f-legal-links">
+        <a href="/terms.html">Terms</a>
+        <a href="/privacy.html">Privacy</a>
       </div>
-      <button onclick="doSignup()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Create Free Account</button>
-      <p id="signupError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-      <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Free plan includes 6 sounds per category and 2 scenarios.</p>
     </div>
-
-    <!-- Beta access divider -->
-    <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-size:0.7rem;color:var(--muted);letter-spacing:0.1em;">OR</span>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-    </div>
-
-    <!-- Beta password -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Access Code</p>
-      <input id="pwInput" type="password" placeholder="Access code"
-        onkeydown="if(event.key==='Enter')checkPassword()"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:11px 16px;margin-bottom:10px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;text-align:center;letter-spacing:0.15em;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <button onclick="checkPassword()" style="width:100%;background:transparent;color:var(--fire);border:1px solid var(--fire);border-radius:8px;padding:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Enter</button>
-      <p id="pwError" style="color:#ff4444;font-size:0.75rem;margin-top:8px;min-height:14px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-    </div>
-
-    <p style="font-size:0.68rem;color:var(--muted);margin-top:16px;letter-spacing:0.06em;">
-      scenesounds.app · Sector 3 Group Ltd
-    </p>
   </div>
-</div>
-
-
+</footer>
 
 <script>
-// ── TAB SWITCHER ────────────────────────────────────────────────────
-function showTab(tab) {
-  const isLogin = tab === 'login';
-  document.getElementById('formLogin').style.display = isLogin ? 'block' : 'none';
-  document.getElementById('formSignup').style.display = isLogin ? 'none' : 'block';
-  document.getElementById('tabLogin').style.background = isLogin ? 'var(--fire)' : 'transparent';
-  document.getElementById('tabLogin').style.color = isLogin ? '#0a0c0f' : 'var(--muted)';
-  document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : 'var(--fire)';
-  document.getElementById('tabSignup').style.color = isLogin ? 'var(--muted)' : '#0a0c0f';
-}
-
-// ── MEMBERSTACK AUTH ────────────────────────────────────────────────
-let currentPlan = 'free'; // 'free' or 'pro'
-
-async function initAuth() {
-  try {
-    const member = await window.$memberstackDom.getCurrentMember();
-    if (member && member.data) {
-      const plans = member.data.planConnections || [];
-      const isPro = plans.some(p =>
-        p.planId && (
-          p.planId === 'prc_pro-annual-m5pz0vzt' ||
-          p.planId === 'pln_free--435m0z2e' === false ||
-          p.planId.toLowerCase().includes('pro') ||
-          p.planId.toLowerCase().includes('organisation')
-        )
-      );
-      currentPlan = isPro ? 'pro' : 'free';
-      hideAuthScreen();
-    }
-  } catch(e) {
-    // Not logged in — stay on auth screen
-  }
-}
-
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const err = document.getElementById('loginError');
-  err.textContent = 'Signing in...';
-  try {
-    const { data } = await window.$memberstackDom.loginMemberEmailPassword({ email, password });
-    const plans = data.planConnections || [];
-    const isPro = plans.some(p =>
-      p.planId && (
-        p.planId === 'prc_pro-annual-m5pz0vzt' ||
-        p.planId.toLowerCase().includes('pro') ||
-        p.planId.toLowerCase().includes('organisation')
-      )
-    );
-    currentPlan = isPro ? 'pro' : 'free';
-    hideAuthScreen();
-  } catch(e) {
-    err.textContent = e.message || 'Incorrect email or password';
-  }
-}
-
-async function doSignup() {
-  const name = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const password = document.getElementById('signupPassword').value;
-  const tc = document.getElementById('tcBoxSignup').checked;
-  const err = document.getElementById('signupError');
-
-  if (!tc) { err.textContent = 'Please accept the Terms of Use'; return; }
-  if (!name || !email || !password) { err.textContent = 'Please fill in all fields'; return; }
-
-  err.textContent = 'Creating account...';
-  try {
-    await window.$memberstackDom.signupMemberEmailPassword({
-      email, password,
-      customFields: { name }
-    });
-    currentPlan = 'free';
-    hideAuthScreen();
-  } catch(e) {
-    err.textContent = e.message || 'Could not create account';
-  }
-}
-
-async function doForgotPassword() {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) { document.getElementById('loginError').textContent = 'Enter your email first'; return; }
-  try {
-    await window.$memberstackDom.sendMemberResetPasswordEmail({ email });
-    document.getElementById('loginError').style.color = 'var(--teal)';
-    document.getElementById('loginError').textContent = 'Reset email sent';
-  } catch(e) {
-    document.getElementById('loginError').textContent = e.message || 'Could not send reset email';
-  }
-}
-
-// ── BETA PASSWORD (kept for current beta users) ─────────────────────
-function checkPassword() {
-  const input = document.getElementById('pwInput').value;
-  const error = document.getElementById('pwError');
-  if (['S3G', 'TRI', 'Babcock123'].includes(input)) {
-    currentPlan = 'pro'; // Beta users get full access
-    sessionStorage.setItem('ss_auth', '1');
-    hideAuthScreen();
-  } else {
-    error.textContent = 'Incorrect access code';
-    document.getElementById('pwInput').value = '';
-    setTimeout(() => error.textContent = '', 2000);
-  }
-}
-
-// ── ACCESS CONTROL ──────────────────────────────────────────────────
-const FREE_LIMIT = 6;
-const FREE_SCENARIO_LIMIT = 2;
-
-function applyAccessControl() {
-  if (currentPlan === 'pro') return; // Full access
-
-  // Show upgrade banner and Try Pro button
-  const banner = document.getElementById('upgradeBanner');
-  banner.style.display = 'flex';
-  // Lock the scenario builder
-  const builder = document.getElementById('scenario-builder');
-  const builderLocked = document.getElementById('scenario-builder-locked');
-  if (builder) builder.style.display = 'none';
-  if (builderLocked) builderLocked.style.display = 'block';
-
-  // Lock sounds beyond first 6 per category
-  const cats = ['general','medical','fire','police','military','clinical'];
-  cats.forEach(cat => {
-    const soundsInCat = sounds.filter(s => s.cat === cat);
-    soundsInCat.slice(FREE_LIMIT).forEach(sound => {
-      const btn = document.querySelector(`.btn-${sound.id}`);
-      if (btn) lockButton(btn);
-    });
-  });
-
-  // Lock scenarios beyond first 2
-  const scenarioCards = document.querySelectorAll('.scenario-card');
-  scenarioCards.forEach((card, i) => {
-    if (i >= FREE_SCENARIO_LIMIT) lockScenarioCard(card);
-  });
-}
-
-function lockButton(btn) {
-  btn.style.opacity = '0.35';
-  btn.style.cursor = 'pointer';
-  btn.style.filter = 'grayscale(60%)';
-  btn.onclick = showUpgradePrompt;
-  // Add lock badge
-  const badge = document.createElement('div');
-  badge.innerHTML = '🔒';
-  badge.style.cssText = 'position:absolute;top:6px;right:6px;font-size:0.7rem;';
-  btn.style.position = 'relative';
-  btn.appendChild(badge);
-}
-
-function lockScenarioCard(card) {
-  card.style.opacity = '0.35';
-  card.style.filter = 'grayscale(60%)';
-  card.style.cursor = 'pointer';
-  card.onclick = showUpgradePrompt;
-  const badge = document.createElement('div');
-  badge.innerHTML = '🔒 Pro';
-  badge.style.cssText = 'position:absolute;top:8px;right:8px;font-size:0.65rem;background:rgba(255,107,53,0.9);color:#0a0c0f;padding:2px 7px;border-radius:4px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;';
-  card.style.position = 'relative';
-  card.appendChild(badge);
-}
-
-function showUpgradePrompt() {
-  showPricingModal();
-}
-
-// ── HIDE AUTH SCREEN & BOOT APP ─────────────────────────────────────
-function hideAuthScreen() {
-  const screen = document.getElementById('authScreen');
-  screen.style.opacity = '0';
-  screen.style.transition = 'opacity 0.4s';
-  setTimeout(() => {
-    screen.style.display = 'none';
-    // Apply access control after grids are built
-    setTimeout(applyAccessControl, 800);
-    // Show pricing modal after 4 seconds for free users
-    if (currentPlan === 'free') {
-      setTimeout(showPricingModal, 4000);
-    }
-  }, 400);
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────
-// Check beta session first, then Memberstack
-if (sessionStorage.getItem('ss_auth') === '1') {
-  document.addEventListener('DOMContentLoaded', () => {
-    currentPlan = 'pro';
-    hideAuthScreen();
-  });
-} else {
-  // Wait for Memberstack to load then check
-  window.addEventListener('load', () => {
-    setTimeout(initAuth, 800);
-  });
-}
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('show'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
 </script>
 
-<!-- PRICING POPUP — shown after 4 seconds to free users -->
-<div id="pricingModal" style="display:none;position:fixed;inset:0;z-index:8000;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);
-  align-items:center;justify-content:center;padding:24px;">
-  <div style="background:#0f1318;border:1px solid #252b35;border-radius:16px;
-    max-width:400px;width:100%;position:relative;overflow:hidden;
-    box-shadow:0 32px 80px rgba(0,0,0,0.9);">
-
-    <!-- Orange top bar -->
-    <div style="height:3px;background:#ff6b35;width:100%;"></div>
-
-    <div style="padding:28px 28px 24px;">
-      <!-- Close -->
-      <button onclick="closePricingModal()" style="position:absolute;top:16px;right:16px;
-        background:#1a1f28;border:none;color:#8a9ab0;font-size:1rem;cursor:pointer;
-        width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
-
-      <!-- Header -->
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.2em;
-        text-transform:uppercase;color:#ff6b35;margin-bottom:10px;">Upgrade</p>
-      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;
-        color:#f0f2f5;line-height:1.1;margin-bottom:8px;">Unlock everything</h2>
-      <p style="font-size:0.84rem;color:#5a6270;line-height:1.6;margin-bottom:24px;">All sounds, all scenarios and the custom scenario builder.</p>
-
-      <!-- Plans -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        <!-- Free -->
-        <div style="background:#07090c;border:1px solid #1a1f28;border-radius:10px;padding:14px;">
-          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;letter-spacing:0.16em;
-            text-transform:uppercase;color:#5a6270;margin-bottom:8px;">Free</p>
-          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;
-            color:#f0f2f5;line-height:1;margin-bottom:10px;">£0</p>
-          <p style="font-size:0.78rem;color:#5a6270;line-height:1.6;">6 sounds per category<br>2 scenarios</p>
-        </div>
-        <!-- Pro -->
-        <div style="background:#1a1208;border:1px solid #ff6b35;border-radius:10px;padding:14px;">
-          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;letter-spacing:0.16em;
-            text-transform:uppercase;color:#ff6b35;margin-bottom:8px;">Pro</p>
-          <div style="display:flex;align-items:flex-end;gap:3px;margin-bottom:10px;">
-            <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;
-              color:#f0f2f5;line-height:1;">£4.99</p>
-            <p style="font-size:0.72rem;color:#5a6270;padding-bottom:4px;">/mo</p>
-          </div>
-          <p style="font-size:0.78rem;color:#f0f2f5;line-height:1.6;">All 85+ sounds<br>All 11 scenarios<br>Custom builder</p>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <a href="https://scenesounds.app/upgrade" target="_blank" style="display:block;text-align:center;
-        background:#ff6b35;color:#07090c;padding:14px;border-radius:8px;
-        font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
-        letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;margin-bottom:10px;">
-        Upgrade to Pro — £4.99/mo
-      </a>
-      <button onclick="closePricingModal()" style="display:block;width:100%;background:none;
-        border:1px solid #1a1f28;border-radius:8px;padding:11px;
-        color:#5a6270;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;
-        letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">
-        Continue with free
-      </button>
-
-      <p style="font-size:0.72rem;color:#3a4250;text-align:center;margin-top:14px;">
-        Organisation licence? <a href="mailto:info@scenesounds.app" style="color:#ff6b35;text-decoration:none;">Get in touch</a>
-      </p>
-    </div>
-  </div>
-</div>
-
-<script>
-function closePricingModal() {
-  document.getElementById('pricingModal').style.display = 'none';
-}
-function showPricingModal() {
-  if (currentPlan !== 'free') return; // Only show to free users
-  const modal = document.getElementById('pricingModal');
-  modal.style.display = 'flex';
-}
-</script>
-
-<header>
-  <div style="display:flex;align-items:center;gap:14px;">
-    <!-- Scene Sounds Logo Mark -->
-    <svg width="44" height="44" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="10" y="35" width="10" height="30" rx="5" fill="#ff6b35"/>
-      <rect x="25" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-      <rect x="40" y="10" width="10" height="80" rx="5" fill="#ff6b35"/>
-      <rect x="55" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-      <rect x="70" y="35" width="10" height="30" rx="5" fill="#ff6b35" opacity="0.7"/>
-      <rect x="85" y="42" width="10" height="16" rx="5" fill="#ff6b35" opacity="0.5"/>
-    </svg>
-    <div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.35rem;letter-spacing:0.1em;color:var(--text);line-height:1;">SCENE <span style="color:#ff6b35;">SOUNDS</span></div>
-      <div style="font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:2px;">Immersive Scenario</div>
-    </div>
-  </div>
-  <div class="status-bar" id="statusBar">
-    <span class="dot"></span>STANDBY
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <!-- Try Pro button — only shown to free users -->
-
-    <!-- Log Out -->
-    <a href="mailto:info@scenesounds.app" style="
-      background:none;border:1px solid var(--border);color:var(--muted);
-      padding:6px 14px;border-radius:6px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-      letter-spacing:0.1em;text-transform:uppercase;
-      text-decoration:none;flex-shrink:0;
-      transition:all 0.2s;
-    " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
-       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Contact</a>
-    <button onclick="doLogout()" style="
-      background:none;border:1px solid var(--border);color:var(--muted);
-      padding:6px 14px;border-radius:6px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
-      flex-shrink:0;transition:all 0.2s;
-    " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
-       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Log Out</button>
-  </div>
-</header>
-
-
-
-<!-- STICKY TABS + SEARCH -->
-<div class="tabs-search-sticky">
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('all')">
-    <span class="tab-dot" style="background:#5a6270"></span>All
-  </button>
-  <button class="tab" onclick="switchTab('general')">
-    <span class="tab-dot" style="background:var(--general)"></span>Environment
-  </button>
-  <button class="tab" onclick="switchTab('medical')">
-    <span class="tab-dot" style="background:var(--medical)"></span>Medical
-  </button>
-  <button class="tab" onclick="switchTab('fire')">
-    <span class="tab-dot" style="background:var(--fire)"></span>Fire & Rescue
-  </button>
-  <button class="tab" onclick="switchTab('police')">
-    <span class="tab-dot" style="background:var(--police)"></span>Police / Road
-  </button>
-  <button class="tab" onclick="switchTab('military')">
-    <span class="tab-dot" style="background:var(--military)"></span>Military
-  </button>
-  <button class="tab" onclick="switchTab('clinical')">
-    <span class="tab-dot" style="background:var(--clinical)"></span>Clinical
-  </button>
-  <button class="tab" onclick="switchTab('scenarios')" style="color:var(--fire);">
-    <span class="tab-dot" style="background:var(--fire)"></span>⚡ Scenarios
-  </button>
-</div>
-
-<!-- Search bar -->
-<div style="padding:10px 16px 4px;">
-  <div style="position:relative;">
-    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:0.85rem;pointer-events:none;">🔍</span>
-    <input
-      id="searchInput"
-      type="search"
-      placeholder="Search sounds..."
-      oninput="searchSounds(this.value)"
-      autocomplete="off"
-      style="
-        width:100%;box-sizing:border-box;
-        background:#0a0c0f;border:1px solid var(--border);border-radius:8px;
-        padding:9px 12px 9px 34px;
-        font-family:'Barlow',sans-serif;font-size:0.88rem;color:var(--text);
-        outline:none;transition:border-color 0.2s;
-      "
-      onfocus="this.style.borderColor='var(--fire)'"
-      onblur="this.style.borderColor='var(--border)'"
-    >
-  </div>
-</div>
-
-</div><!-- end tabs-search-sticky -->
-
-<!-- Search results section (hidden by default) -->
-<div id="tab-search" class="grid-section" style="display:none;padding:12px 16px;">
-  <div class="sound-grid" id="grid-search"></div>
-  <p id="search-empty" style="display:none;color:var(--muted);font-size:0.85rem;text-align:center;padding:24px 0;">No sounds found</p>
-</div>
-
-<!-- ALL TAB -->
-<div class="grid-section active" id="tab-all">
-
-  <div style="padding: 16px 4px 0">
-    <div class="volume-bar">
-      <span class="vol-label">Volume</span>
-      <input type="range" id="masterVol" class="master-vol-slider" class="master-vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
-      <span class="vol-val" id="volDisplay" class="master-vol-val">80%</span>
-    </div>
-  </div>
-
-  <div class="section-label">🌍 Environment</div>
-  <div class="sound-grid" id="grid-general-all"></div>
-
-  <div class="section-label">🚑 Medical</div>
-  <div class="sound-grid" id="grid-medical-all-combined"></div>
-
-  <div class="section-label">🔥 Fire & Rescue</div>
-  <div class="sound-grid" id="grid-fire-all"></div>
-
-  <div class="section-label">🚔 Police / Road</div>
-  <div class="sound-grid" id="grid-police-all"></div>
-
-  <div class="section-label">🩺 Clinical</div>
-  <div class="sound-grid" id="grid-clinical-all"></div>
-
-  <div class="section-label">🪖 Military / Combat Medic</div>
-  <div class="sound-grid" id="grid-military-all"></div>
-</div>
-
-<div class="grid-section" id="tab-medical">
-  <div class="sound-grid" id="grid-medical-tab"></div>
-</div>
-
-<div class="grid-section" id="tab-fire">
-  <div class="sound-grid" id="grid-fire"></div>
-</div>
-
-<div class="grid-section" id="tab-police">
-  <div class="sound-grid" id="grid-police"></div>
-</div>
-
-<div class="grid-section" id="tab-general">
-  <div class="sound-grid" id="grid-general"></div>
-</div>
-
-<div class="grid-section" id="tab-military">
-  <div style="padding: 16px 4px 0">
-    <div class="volume-bar">
-      <span class="vol-label">Volume</span>
-      <input type="range" class="master-vol-slider" min="0" max="100" value="80" oninput="setVolume(this.value)">
-      <span class="vol-val">80%</span>
-    </div>
-  </div>
-  <div class="sound-grid" id="grid-military"></div>
-</div>
-
-<div class="grid-section" id="tab-scenarios">
-  <div class="section-label" style="padding-top:16px;">🚨 Emergency Services</div>
-  <div id="scenario-grid-es" style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;"></div>
-
-  <div class="section-label">🪖 Military</div>
-  <div id="scenario-grid-mil" style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px;"></div>
-
-  <div class="section-label">💾 My Saved Scenarios</div>
-  <div id="scenario-grid-custom" style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
-    <div id="no-custom-msg" style="color:var(--muted);font-size:0.8rem;padding:12px 4px;letter-spacing:0.04em;">No saved scenarios yet — build one below.</div>
-  </div>
-
-  <!-- Builder — Pro only -->
-  <div id="scenario-builder-locked" style="display:none;background:var(--surface);border:1px solid rgba(180,138,255,0.2);border-radius:14px;padding:28px 20px;margin-bottom:32px;text-align:center;">
-    <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#b48aff;margin-bottom:8px;">MAKE YOUR OWN</div>
-    <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own custom scenarios.<br>Available on Pro.</p>
-    <button onclick="showPricingModal()" style="background:var(--fire);color:#0a0c0f;border:none;border-radius:7px;padding:11px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £4.99/mo</button>
-  </div>
-
-  <!-- Builder — shown to Pro users -->
-  <div id="scenario-builder" style="
-    background:var(--surface);
-    border:1px solid #b48aff44;
-    border-radius:14px;
-    padding:20px;
-    margin-bottom:32px;
-  ">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
-      <span style="font-size:1.4rem;">🛠️</span>
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#b48aff;">MAKE YOUR OWN</div>
-        <div style="font-size:0.7rem;color:var(--muted);margin-top:1px;">Pick sounds, set volumes, name it, save it</div>
-      </div>
-    </div>
-
-    <!-- Name field -->
-    <div style="margin-bottom:16px;">
-      <label style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Scenario Name</label>
-      <input id="custom-name" type="text" placeholder="e.g. Mountain Rescue, Urban Patrol…" maxlength="40" style="
-        width:100%;background:#0a0c0f;border:1px solid var(--border);
-        border-radius:8px;padding:10px 14px;
-        font-family:'Barlow',sans-serif;font-size:0.9rem;color:var(--text);
-        outline:none;transition:border-color 0.2s;
-      " onfocus="this.style.borderColor='#b48aff'" onblur="this.style.borderColor='var(--border)'">
-    </div>
-
-    <!-- Icon picker -->
-    <div style="margin-bottom:16px;">
-      <label style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px;">Icon</label>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;" id="icon-picker">
-      </div>
-    </div>
-
-    <!-- Sound selector -->
-    <div style="margin-bottom:18px;">
-      <label style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:10px;">Select Sounds & Set Volumes</label>
-      <div id="builder-sound-list" style="display:flex;flex-direction:column;gap:6px;max-height:340px;overflow-y:auto;padding-right:4px;"></div>
-    </div>
-
-    <!-- Save button -->
-    <button onclick="saveCustomScenario()" style="
-      width:100%;background:#b48aff;border:none;color:#0a0c0f;
-      padding:12px;border-radius:8px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:900;
-      font-size:1rem;letter-spacing:0.1em;text-transform:uppercase;
-      cursor:pointer;transition:opacity 0.2s;
-    " onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">💾 Save Scenario</button>
-    <div id="builder-msg" style="text-align:center;font-size:0.75rem;color:var(--muted);margin-top:8px;min-height:18px;"></div>
-  </div>
-</div>
-
-<div class="grid-section" id="tab-clinical">
-  <div class="sound-grid" id="grid-clinical"></div>
-</div>
-
-<!-- Active Sounds Mixer Panel -->
-<div id="mixerBtn" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:300;">
-  <!-- Collapsed bar -->
-  <div id="mixerBar" onclick="toggleMixer()" style="
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    padding: 12px 20px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    cursor: pointer;
-    user-select: none;
-  ">
-    <div id="mixerWave" style="display:flex;align-items:center;gap:3px;height:20px;">
-      <span style="display:block;width:3px;background:var(--fire);border-radius:2px;animation:wave 1s ease-in-out infinite;"></span>
-      <span style="display:block;width:3px;background:var(--fire);border-radius:2px;animation:wave 1s ease-in-out 0.15s infinite;"></span>
-      <span style="display:block;width:3px;background:var(--fire);border-radius:2px;animation:wave 1s ease-in-out 0.3s infinite;"></span>
-      <span style="display:block;width:3px;background:var(--fire);border-radius:2px;animation:wave 1s ease-in-out 0.45s infinite;"></span>
-    </div>
-    <div style="flex:1;">
-      <div id="mixerTitle" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.95rem;letter-spacing:0.05em;">ACTIVE MIXER</div>
-      <div id="mixerCount" style="font-size:0.7rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;margin-top:1px;">0 sounds looping</div>
-    </div>
-    <div id="mixerChevron" style="color:var(--muted);font-size:0.8rem;transition:transform 0.3s;">▲</div>
-    <button onclick="event.stopPropagation();pauseAll()" id="pauseAllBtn" style="
-      background:none;border:1px solid var(--border);color:var(--muted);
-      padding:6px 12px;border-radius:6px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;
-    ">⏸ Pause</button>
-    <button onclick="event.stopPropagation();stopAll()" style="
-      background:none;border:1px solid var(--border);color:var(--muted);
-      padding:6px 12px;border-radius:6px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;
-    ">■ Stop</button>
-  </div>
-
-  <!-- Expanded mixer panel -->
-  <div id="mixerPanel" style="
-    background: var(--surface);
-    border-top: 1px solid var(--border);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.35s ease;
-  ">
-    <div style="padding: 6px 16px 16px;">
-      <!-- Master volume -->
-      <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(255,107,53,0.06);border:1px solid rgba(255,107,53,0.15);border-radius:10px;margin-bottom:14px;">
-        <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--fire);width:52px;flex-shrink:0;">MASTER</span>
-        <input type="range" id="masterVolSlider" class="master-vol-slider" min="0" max="100" value="80" oninput="setMasterVolume(this.value)" style="flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;">
-        <span id="masterVolVal" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;color:var(--muted);width:32px;text-align:right;">80%</span>
-      </div>
-      <!-- Per-sound rows injected here -->
-      <div id="mixerRows"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-const sounds = [
-  // Medical
-  // Medical — real audio via Freesound CDN previews (CC licensed)
-  { id: 'heartbeat', label: 'Heartbeat', sub: 'Cardiac monitor', icon: '❤️', cat: 'medical',
-    url: '/heartbeat.mp3' },
-  { id: 'snoring', label: 'Snoring', sub: 'Airway obstruction', icon: '😴', cat: 'medical',
-    url: '/snoring.mp3' },
-  { id: 'wheeze', label: 'Wheeze', sub: 'Respiratory distress', icon: '🫁', cat: 'medical',
-    url: '/wheeze.mp3',
-    freq: 600, type: 'sawtooth' },
-  { id: 'coughing', label: 'Coughing', sub: 'Persistent cough', icon: '🤧', cat: 'medical',
-    url: '/coughing.mp3' },
-  { id: 'crying', label: 'Crying / Distress', sub: 'Patient in pain', icon: '😢', cat: 'medical',
-    url: '/crying.mp3' },
-  { id: 'ecg', label: 'ECG Beeps', sub: 'Heart rhythm monitor', icon: '📈', cat: 'medical',
-    url: '/ecg-beeps.mp3',
-    freq: 880, type: 'sine', pulse: true },
-  { id: 'baby_cry', label: 'Baby Crying', sub: 'Infant in distress', icon: '👶', cat: 'medical',
-    url: '/baby-crying.mp3',
-    freq: 750, type: 'sawtooth' },
-  { id: 'stridor', label: 'Stridor', sub: 'Upper airway obstruction', icon: '🌬️', cat: 'medical',
-    url: '/stridor.mp3',
-    freq: 900, type: 'sawtooth' },
-  { id: 'shivering', label: 'Shivering', sub: 'Hypothermia / chills', icon: '🥶', cat: 'medical',
-    freq: 6, type: 'triangle', pulse: true },
-  { id: 'gurgling', label: 'Gurgling', sub: 'Airway fluid / gurgling breath', icon: '💧', cat: 'medical',
-    url: '/gurgling.mp3', freq: 180, type: 'sine', pulse: true },
-  // Fire & Rescue
-  { id: 'alarm', label: 'Fire Alarm', sub: 'Building alarm', icon: '🚨', cat: 'fire',
-    url: '/fire-alarm.mp3' },
-  { id: 'crackling', label: 'Crackling Fire', sub: 'Active fire', icon: '🔥', cat: 'fire',
-    url: '/crackling-fire.mp3' },
-  { id: 'radio_fire', label: 'Radio Comms', sub: 'Fire ground radio', icon: '📻', cat: 'fire',
-    url: '/radio-chatter.mp3' },
-  { id: 'crowd_fire', label: 'Crowd Noise', sub: 'Bystanders', icon: '👥', cat: 'fire',
-    url: '/crowd-noise.mp3' },
-  { id: 'hissing', label: 'Gas Hiss', sub: 'Gas leak sound', icon: '⚠️', cat: 'fire',
-    url: '/gas-hiss.mp3' },
-  { id: 'explosion', label: 'Explosion / Bang', sub: 'Structure collapse', icon: '💥', cat: 'fire',
-    url: '/explosion.mp3' },
-
-  { id: 'fire_appliance_siren', label: 'Fire Engine Siren', sub: 'Fire appliance responding', icon: '🚒', cat: 'fire',
-    url: '/fire-appliance-siren.mp3',
-    freq: 600, type: 'square', pulse: true },
-  { id: 'collapse', label: 'Structural Collapse', sub: 'Building collapse rumble', icon: '🏚️', cat: 'fire',
-    url: '/structural-collapse.mp3',
-    freq: 55, type: 'sawtooth' },
-  { id: 'mayday', label: 'Mayday Call', sub: 'Fire ground mayday', icon: '🆘', cat: 'fire',
-    url: '/mayday-call.mp3',
-    freq: 380, type: 'sine' },
-  // Police / Road
-  { id: 'siren', label: 'Siren', sub: 'Emergency vehicle', icon: '🚔', cat: 'police',
-    url: '/siren.mp3' },
-  { id: 'traffic', label: 'Heavy Traffic', sub: 'Busy road', icon: '🚗', cat: 'police',
-    url: '/heavy-traffic.mp3' },
-  { id: 'crash', label: 'Impact / Crash', sub: 'RTC sound', icon: '💢', cat: 'police',
-    url: '/car-crash.mp3' },
-  { id: 'horn', label: 'Car Horn', sub: 'Aggressive driver', icon: '📯', cat: 'police',
-    url: '/car-horn.mp3' },
-  { id: 'taser', label: 'Taser', sub: 'Taser deployment', icon: '⚡', cat: 'police',
-    url: '/taser.mp3',
-    freq: 200, type: 'square', pulse: true },
-  { id: 'glass_break', label: 'Glass Breaking', sub: 'Forced entry / RTC', icon: '🪟', cat: 'police',
-    url: '/glass-breaking.mp3',
-    freq: 1800, type: 'sawtooth' },
-  { id: 'argument', label: 'Argument', sub: 'Hostile individual', icon: '📢', cat: 'police',
-    url: '/argument.mp3' },
-  // General / Environment
-  { id: 'wind', label: 'Wind', sub: 'Outdoor conditions', icon: '🌬️', cat: 'general',
-    url: '/wind.mp3' },
-  { id: 'rain', label: 'Rain', sub: 'Weather conditions', icon: '🌧️', cat: 'general',
-    url: '/rain.mp3' },
-  { id: 'dogs', label: 'Dogs Barking', sub: 'Residential scene', icon: '🐕', cat: 'general',
-    url: '/dogs-barking.mp3' },
-  { id: 'construction', label: 'Construction', sub: 'Power tools / drills', icon: '🔨', cat: 'general',
-    url: '/construction.mp3' },
-  { id: 'helicopter', label: 'Helicopter', sub: 'Air support', icon: '🚁', cat: 'general',
-    url: '/helicopter.mp3' },
-  { id: 'children', label: 'Children', sub: 'Playground / school', icon: '🧒', cat: 'general',
-    url: '/children-playground.mp3' },
-
-  { id: 'night_ambience', label: 'Night Ambience', sub: 'Darkness / night scene', icon: '🌙', cat: 'general',
-    url: '/night-ambience.mp3',
-    freq: 120, type: 'sine' },
-  { id: 'tunnel', label: 'Tunnel / Underground', sub: 'Echo / confined space', icon: '🕳️', cat: 'general',
-    url: '/tunnel-echo.mp3',
-    freq: 80, type: 'triangle' },
-  { id: 'warehouse', label: 'Industrial Warehouse', sub: 'Factory / industrial scene', icon: '🏭', cat: 'general',
-    url: '/warehouse.mp3',
-    freq: 95, type: 'sawtooth' },
-  { id: 'thunder_rain', label: 'Thunder & Rain', sub: 'Heavy weather conditions', icon: '⛈️', cat: 'general',
-    url: '/thunder-rain.mp3',
-    freq: 60, type: 'triangle' },
-
-  // Medical — Male Adult
-  { id: 'male_snoring', label: 'Snoring (Male)', sub: 'Male airway obstruction', icon: '👨', cat: 'medical',
-    url: '/male-snoring.mp3', freq: 140, type: 'sine' },
-  { id: 'male_groaning', label: 'Groaning (Male)', sub: 'Male pain response', icon: '👨', cat: 'medical',
-    url: '/male-groaning.mp3', freq: 160, type: 'triangle' },
-  { id: 'male_screaming', label: 'Screaming (Male)', sub: 'Male in acute pain', icon: '👨', cat: 'medical',
-    url: '/male-screaming.mp3', freq: 380, type: 'sawtooth' },
-
-  // Medical — Female Adult
-  { id: 'female_snoring', label: 'Snoring (Female)', sub: 'Female airway obstruction', icon: '👩', cat: 'medical',
-    url: '/female-snoring.mp3', freq: 160, type: 'sine' },
-  { id: 'female_groaning', label: 'Groaning (Female)', sub: 'Female pain response', icon: '👩', cat: 'medical',
-    url: '/female-groaning.mp3', freq: 200, type: 'triangle' },
-  { id: 'female_screaming', label: 'Screaming (Female)', sub: 'Female in acute pain', icon: '👩', cat: 'medical',
-    url: '/female-screaming.mp3', freq: 480, type: 'sawtooth' },
-
-  // Medical — Child
-  { id: 'child_crying', label: 'Child Crying', sub: 'Distressed child', icon: '🧒', cat: 'medical',
-    url: '/child-crying.mp3', freq: 520, type: 'sawtooth' },
-  { id: 'child_screaming', label: 'Child Screaming', sub: 'Child in pain', icon: '🧒', cat: 'medical',
-    url: '/child-screaming.mp3', freq: 600, type: 'sawtooth' },
-  { id: 'child_coughing', label: 'Child Coughing', sub: 'Child respiratory issue', icon: '🧒', cat: 'medical',
-    url: '/child-coughing.mp3', freq: 340, type: 'triangle' },
-
-  // Medical — Baby / Infant
-  { id: 'baby_crying_intense', label: 'Baby Crying', sub: 'Infant in distress', icon: '👶', cat: 'medical',
-    url: '/baby-crying-intense.mp3', freq: 800, type: 'sawtooth' },
-  { id: 'baby_screaming', label: 'Baby Screaming', sub: 'Infant acute distress', icon: '👶', cat: 'medical',
-    url: '/baby-screaming.mp3', freq: 900, type: 'sawtooth' },
-
-  // Fire & Rescue — Extra
-  { id: 'fire_crackle_intense', label: 'Intense Fire', sub: 'Large fire, high heat', icon: '🔥', cat: 'fire',
-    url: '/fire-intense.mp3', freq: 90, type: 'sawtooth' },
-  { id: 'smoke_alarm', label: 'Smoke Alarm', sub: 'Domestic smoke detector', icon: '🔔', cat: 'fire',
-    url: '/smoke-alarm.mp3', freq: 3000, type: 'square', pulse: true },
-  { id: 'trapped_victim', label: 'Trapped Person', sub: 'Victim calling for help', icon: '🆘', cat: 'fire',
-    url: '/trapped-person.mp3', freq: 420, type: 'triangle' },
-  { id: 'water_hose', label: 'Hose / Water', sub: 'High pressure water jet', icon: '💧', cat: 'fire',
-    url: '/water-hose.mp3', freq: 800, type: 'sawtooth' },
-
-  // Police / Road — Extra
-  { id: 'crowd_hostile', label: 'Hostile Crowd', sub: 'Aggressive public order', icon: '👊', cat: 'police',
-    url: '/hostile-crowd.mp3', freq: 280, type: 'sawtooth' },
-  { id: 'dog_unit', label: 'Police Dog', sub: 'K9 unit barking', icon: '🐕', cat: 'police',
-    url: '/police-dog.mp3', freq: 460, type: 'square' },
-  { id: 'helicopter_police', label: 'Police Helicopter', sub: 'NPAS overhead', icon: '🚁', cat: 'police',
-    url: '/police-helicopter.mp3', freq: 92, type: 'triangle', pulse: true },
-
-  // General / Environment — Extra
-  { id: 'motorway', label: 'Motorway', sub: 'High speed road ambience', icon: '🛣️', cat: 'general',
-    url: '/motorway.mp3', freq: 200, type: 'triangle' },
-  { id: 'rural', label: 'Rural / Fields', sub: 'Countryside ambience', icon: '🌿', cat: 'general',
-    url: '/rural-fields.mp3', freq: 300, type: 'sine' },
-  { id: 'urban_night', label: 'Urban Night', sub: 'City at night', icon: '🌆', cat: 'general',
-    url: '/urban-night.mp3', freq: 130, type: 'sine' },
-  { id: 'shopping_centre', label: 'Shopping Centre', sub: 'Busy indoor public space', icon: '🛒', cat: 'general',
-    url: '/shopping-centre.mp3', freq: 240, type: 'triangle' },
-  { id: 'school', label: 'School', sub: 'School corridor / yard', icon: '🏫', cat: 'general',
-    url: '/school.mp3', freq: 580, type: 'sine' },
-  { id: 'pub_crowd', label: 'Pub / Venue', sub: 'Busy indoor venue', icon: '🍺', cat: 'general',
-    url: '/pub-crowd.mp3', freq: 260, type: 'triangle' },
-
-  // Clinical Sounds
-  { id: 'bowel_normal', label: 'Bowel Sounds', sub: 'Normal bowel activity', icon: '🧍', cat: 'clinical', freq: 80, type: 'triangle' },
-  { id: 'bowel_hyper', label: 'Hyperactive Bowel', sub: 'Increased gut motility', icon: '🧍', cat: 'clinical', freq: 120, type: 'sawtooth' },
-  { id: 'lung_clear', label: 'Clear Lung Fields', sub: 'Normal vesicular breath sounds', icon: '🫁', cat: 'clinical', freq: 180, type: 'sine' },
-  { id: 'lung_crackles', label: 'Lung Crackles', sub: 'Fine crackles — pulmonary oedema', icon: '🫁', cat: 'clinical', freq: 800, type: 'sawtooth' },
-  { id: 'lung_wheeze_exp', label: 'Expiratory Wheeze', sub: 'Bronchospasm / asthma', icon: '🫁', cat: 'clinical', freq: 500, type: 'sawtooth' },
-  { id: 'lung_stridor_clinical', label: 'Inspiratory Stridor', sub: 'Upper airway obstruction', icon: '🫁', cat: 'clinical', freq: 700, type: 'sawtooth' },
-  { id: 'lung_pleural', label: 'Pleural Rub', sub: 'Pleurisy / inflammation', icon: '🫁', cat: 'clinical', freq: 120, type: 'square' },
-  { id: 'hyper_resonance', label: 'Hyper-Resonance', sub: 'Percussion — pneumothorax', icon: '🥁', cat: 'clinical', freq: 200, type: 'triangle', pulse: true },
-  { id: 'heart_normal', label: 'Normal Heart', sub: 'Regular S1 S2 heart sounds', icon: '❤️', cat: 'clinical', freq: 75, type: 'sine', pulse: true },
-  { id: 'heart_murmur_sys', label: 'Systolic Murmur', sub: 'Aortic stenosis / MR', icon: '❤️', cat: 'clinical', freq: 280, type: 'sawtooth' },
-  { id: 'heart_murmur_dias', label: 'Diastolic Murmur', sub: 'Aortic regurgitation', icon: '❤️', cat: 'clinical', freq: 180, type: 'triangle' },
-  { id: 'heart_gallop', label: 'Gallop Rhythm', sub: 'S3 / S4 — heart failure', icon: '❤️', cat: 'clinical', freq: 60, type: 'triangle', pulse: true },
-  { id: 'heart_afib', label: 'AF / Irregular', sub: 'Atrial fibrillation', icon: '❤️', cat: 'clinical', freq: 85, type: 'square', pulse: true },
-  { id: 'heart_friction', label: 'Pericardial Rub', sub: 'Pericarditis', icon: '❤️', cat: 'clinical', freq: 140, type: 'square' },
-  { id: 'hypo_resonance', label: 'Hypo-Resonance', sub: 'Percussion — haemothorax / effusion', icon: '🥁', cat: 'clinical', freq: 60, type: 'triangle' },
-
-  { id: 'electric_buzz', label: 'Electrical Buzz', sub: 'Live cable / transformer hum', icon: '⚡', cat: 'general',
-    url: '/electrical-buzz.mp3', freq: 60, type: 'square' },
-  { id: 'electric_arc', label: 'Electric Arc', sub: 'Electrical discharge / sparking', icon: '⚡', cat: 'general',
-    url: '/electric-arc.mp3', freq: 1400, type: 'sawtooth', pulse: true },
-  { id: 'generator', label: 'Generator', sub: 'Portable generator running', icon: '🔋', cat: 'general',
-    url: '/generator.mp3', freq: 85, type: 'sawtooth' },
-  { id: 'train', label: 'Train Station', sub: 'Passing train / rail noise', icon: '🚆', cat: 'general',
-    url: '/train-station.mp3', freq: 95, type: 'sawtooth' },
-  { id: 'chainsaw', label: 'Chainsaw', sub: 'Power tool cutting', icon: '🪚', cat: 'general',
-    url: '/chainsaw.mp3', freq: 220, type: 'sawtooth' },
-  { id: 'office', label: 'Office', sub: 'Office background ambience', icon: '🏢', cat: 'general',
-    url: '/office.mp3', freq: 200, type: 'triangle' },
-  { id: 'waves', label: 'Waves', sub: 'Sea / coastal water', icon: '🌊', cat: 'general',
-    url: '/waves.mp3', freq: 110, type: 'sine' },
-  { id: 'motorbike', label: 'Motorbike', sub: 'Motorcycle engine', icon: '🏍️', cat: 'general',
-    url: '/motorbike.mp3', freq: 180, type: 'sawtooth' },
-  { id: 'river', label: 'River', sub: 'Flowing water / rapids', icon: '🏞️', cat: 'general',
-    url: '/river.mp3', freq: 140, type: 'sine' },
-  { id: 'airport', label: 'Airport', sub: 'Terminal ambience / announcements', icon: '✈️', cat: 'general',
-    url: '/airport.mp3', freq: 210, type: 'triangle' },
-  { id: 'railway_crossing', label: 'Railway Crossing', sub: 'Level crossing bell / barrier', icon: '🚦', cat: 'general',
-    url: '/railway-crossing.mp3', freq: 880, type: 'square', pulse: true },
-  { id: 'jungle', label: 'Jungle', sub: 'Rainforest ambience', icon: '🌴', cat: 'general',
-    url: '/jungle.mp3', freq: 320, type: 'triangle' },
-  { id: 'farm', label: 'Farm', sub: 'Farmyard / livestock ambience', icon: '🐄', cat: 'general',
-    url: '/farm.mp3', freq: 180, type: 'triangle' },
-  // Military / Combat Medic
-  { id: 'gunfire', label: 'Gunfire', sub: 'Small arms / contact', icon: '🔫', cat: 'military',
-    url: '/gunfire.mp3' },
-  { id: 'explosion_mil', label: 'IED / Blast', sub: 'Explosive detonation', icon: '💣', cat: 'military',
-    url: '/ied-blast.mp3' },
-  { id: 'radio_mil', label: 'Soldier Down', sub: 'Casualty radio comms', icon: '📡', cat: 'military',
-    url: '/battle-comms.mp3' },
-  { id: 'mortar', label: 'Incoming Mortar', sub: 'Indirect fire warning', icon: '⚠️', cat: 'military',
-    url: '/incoming-mortar.mp3' },
-  { id: 'vehicles', label: 'Armoured Vehicles', sub: 'Tracked vehicle noise', icon: '🛡️', cat: 'military',
-    url: '/armoured-vehicles.mp3',
-    freq: 110, type: 'triangle' },
-  { id: 'shouting_mil', label: 'Orders / Shouting', sub: 'Command under fire', icon: '📢', cat: 'military',
-    url: '/military-shouting.mp3' },
-  { id: 'wind_desert', label: 'Desert Wind', sub: 'Arid environment', icon: '🏜️', cat: 'military',
-    url: '/desert-wind.mp3' },
-  { id: 'jets', label: 'Fast Air', sub: 'CAS jet flyover', icon: '✈️', cat: 'military',
-    url: '/fast-air-jets.mp3' },
-  { id: 'chaos', label: 'Battlefield Chaos', sub: 'Full contact scenario', icon: '🌪️', cat: 'military',
-    url: '/battlefield-chaos.mp3' }
-];
-
-const catColor = {
-  medical: '#00c9a7', fire: '#ff6b35', police: '#4a9eff', general: '#b48aff', military: '#8ab840',
-};
-const catClass = {
-  medical: 'cat-medical', fire: 'cat-fire', police: 'cat-police', general: 'cat-general', military: 'cat-military',
-};
-
-// Audio engine — uses real HTML5 Audio if URL provided, oscillator fallback otherwise
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-const masterGain = audioCtx.createGain();
-masterGain.gain.value = 0.8;
-masterGain.connect(audioCtx.destination);
-
-const activeNodes = {};
-const soundVolumes = {};
-let masterVolumeLevel = 0.8;
-let mixerOpen = false;
-
-// Simple direct volume calculation - no multiplication chains
-function calcVolume(soundVol, master) {
-  return Math.max(0, Math.min(soundVol * master, 1));
-}
-
-function makeRealAudio(sound, vol) {
-  const audio = new Audio();
-  audio.loop = true;
-  audio.preload = 'auto';
-  const v = calcVolume(vol, masterVolumeLevel);
-  audio.volume = v;
-  audio.muted = (v === 0);
-
-  // If file fails to load, fall back to oscillator
-  audio.onerror = () => {
-    console.warn('[SS] File not found, using oscillator:', sound.url);
-    if (activeNodes[sound.id] && activeNodes[sound.id].isReal) {
-      activeNodes[sound.id].stop();
-      const fallback = makeOscillator({...sound, freq: sound.freq || 220, type: sound.type || 'sine'}, vol);
-      activeNodes[sound.id] = fallback;
-    }
-  };
-
-  audio.src = sound.url;
-  audio.play().catch(err => console.warn('[SS]', sound.id, err));
-  return {
-    audio, gainNode: null, isReal: true,
-    stop: () => { try { audio.pause(); audio.src = ''; } catch(e){} }
-  };
-}
-
-function makeOscillator(sound, vol) {
-  const osc = audioCtx.createOscillator();
-  const gainNode = audioCtx.createGain();
-  osc.type = sound.type || 'sine';
-  osc.frequency.value = sound.freq || 220;
-  const base = sound.pulse ? 0.08 : 0.12;
-  const v = calcVolume(vol, masterVolumeLevel);
-  gainNode.gain.value = base * v;
-
-  if (sound.pulse) {
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = sound.id === 'heartbeat' ? 1.2 : 2;
-    lfoGain.gain.value = 0.08 * v;
-    lfo.connect(lfoGain);
-    lfoGain.connect(gainNode.gain);
-    lfo.start();
-  }
-
-  osc.connect(gainNode);
-  gainNode.connect(masterGain);
-  osc.start();
-  return { osc, gainNode, isReal: false, stop: () => { try { osc.stop(); } catch(e){} } };
-}
-
-function applyVolume(id) {
-  const node = activeNodes[id];
-  if (!node) return;
-  const sv = soundVolumes[id] ?? 0.8;
-  const v = calcVolume(sv, masterVolumeLevel);
-  if (node.isReal) {
-    node.audio.muted = (v === 0);
-    node.audio.volume = v;
-  } else {
-    const sound = sounds.find(s => s.id === id);
-    const base = sound && sound.pulse ? 0.08 : 0.12;
-    node.gainNode.gain.value = base * v;
-  }
-}
-
-function setSoundVolume(id, val) {
-  soundVolumes[id] = parseFloat(val) / 100;
-  applyVolume(id);
-  const display = document.getElementById(`vol-val-${id}`);
-  if (display) display.textContent = Math.round(val) + '%';
-}
-
-function setMasterVolume(val) {
-  masterVolumeLevel = parseFloat(val) / 100;
-  masterGain.gain.value = masterVolumeLevel;
-  Object.keys(activeNodes).forEach(id => applyVolume(id));
-  const rounded = Math.round(val);
-  document.querySelectorAll('.master-vol-val').forEach(el => el.textContent = rounded + '%');
-  const display = document.getElementById('masterVolVal');
-  if (display) display.textContent = rounded + '%';
-  document.querySelectorAll('.master-vol-slider').forEach(s => { if (s.value != val) s.value = val; });
-}
-
-function setVolume(val) { setMasterVolume(val); }
-
-function toggleSound(sound) {
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  if (activeNodes[sound.id]) {
-    activeNodes[sound.id].stop();
-    delete activeNodes[sound.id];
-    document.querySelectorAll(`.btn-${sound.id}`).forEach(b => b.classList.remove('playing'));
-  } else {
-    const vol = soundVolumes[sound.id] ?? 0.8;
-    soundVolumes[sound.id] = vol;
-    if (sound.url) {
-      activeNodes[sound.id] = makeRealAudio(sound, vol);
-    } else {
-      activeNodes[sound.id] = makeOscillator(sound, vol);
-    }
-    document.querySelectorAll(`.btn-${sound.id}`).forEach(b => b.classList.add('playing'));
-  }
-  updateMixer();
-}
-
-function stopSingle(id) {
-  if (activeNodes[id]) {
-    activeNodes[id].stop();
-    delete activeNodes[id];
-    document.querySelectorAll(`.btn-${id}`).forEach(b => b.classList.remove('playing'));
-  }
-  updateMixer();
-}
-
-function stopAll() {
-  Object.keys(activeNodes).forEach(id => {
-    activeNodes[id].stop();
-    delete activeNodes[id];
-    document.querySelectorAll(`.btn-${id}`).forEach(b => b.classList.remove('playing'));
-  });
-  updateMixer();
-}
-
-function toggleMixer() {
-  mixerOpen = !mixerOpen;
-  const panel = document.getElementById('mixerPanel');
-  const chevron = document.getElementById('mixerChevron');
-  if (mixerOpen) {
-    panel.style.maxHeight = '420px';
-    panel.style.overflowY = 'auto';
-    chevron.style.transform = 'rotate(180deg)';
-  } else {
-    panel.style.maxHeight = '0';
-    panel.style.overflowY = 'hidden';
-    chevron.style.transform = 'rotate(0deg)';
-  }
-}
-
-function updateMixer() {
-  const ids = Object.keys(activeNodes);
-  const count = ids.length;
-  const btn = document.getElementById('mixerBtn');
-  const statusBar = document.getElementById('statusBar');
-
-  if (count === 0) {
-    btn.style.display = 'none';
-    if (mixerOpen) { mixerOpen = false; document.getElementById('mixerPanel').style.maxHeight = '0'; }
-    statusBar.className = 'status-bar';
-    statusBar.innerHTML = '<span class="dot"></span>STANDBY';
-  } else {
-    btn.style.display = 'block';
-    statusBar.className = 'status-bar playing';
-    statusBar.innerHTML = `<span class="dot"></span>${count} ACTIVE`;
-    document.getElementById('mixerCount').textContent = `${count} sound${count !== 1 ? 's' : ''} looping`;
-  }
-
-  // Rebuild mixer rows
-  const rows = document.getElementById('mixerRows');
-  rows.innerHTML = '';
-  ids.forEach(id => {
-    const sound = sounds.find(s => s.id === id);
-    if (!sound) return;
-    const vol = Math.round((soundVolumes[id] ?? 0.8) * 100);
-    const color = catColor[sound.cat];
-
-    const row = document.createElement('div');
-    row.style.cssText = `display:flex;align-items:center;gap:10px;padding:9px 12px;background:rgba(255,255,255,0.03);border:1px solid #1e2329;border-left:3px solid ${color};border-radius:8px;margin-bottom:8px;`;
-    row.innerHTML = `
-      <span style="font-size:1.2rem;flex-shrink:0;">${sound.icon}</span>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.82rem;letter-spacing:0.05em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sound.label}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:5px;">
-          <span style="font-size:0.62rem;color:#5a6270;letter-spacing:0.06em;flex-shrink:0;">VOL</span>
-          <input type="range" min="0" max="100" value="${vol}"
-            style="-webkit-appearance:none;flex:1;height:3px;background:#1e2329;border-radius:2px;outline:none;accent-color:${color};"
-            oninput="setSoundVolume('${id}', this.value)" onchange="setSoundVolume('${id}', this.value)">
-          <span id="vol-val-${id}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.75rem;color:#5a6270;width:30px;text-align:right;">${vol}%</span>
-        </div>
-      </div>
-      <button onclick="stopSingle('${id}')" style="
-        background:none;border:1px solid #1e2329;color:#5a6270;
-        width:28px;height:28px;border-radius:6px;cursor:pointer;
-        font-size:0.7rem;display:flex;align-items:center;justify-content:center;
-        flex-shrink:0;transition:all 0.2s;
-      " onmouseover="this.style.borderColor='${color}';this.style.color='${color}'"
-         onmouseout="this.style.borderColor='#1e2329';this.style.color='#5a6270'">✕</button>
-    `;
-    rows.appendChild(row);
-  });
-
-  // Auto-open mixer when first sound added
-  if (count > 0 && !mixerOpen) {
-    mixerOpen = true;
-    document.getElementById('mixerPanel').style.maxHeight = '420px';
-    document.getElementById('mixerPanel').style.overflowY = 'auto';
-    document.getElementById('mixerChevron').style.transform = 'rotate(180deg)';
-  }
-
-  // Adjust body padding
-  document.body.style.paddingBottom = count > 0 ? '220px' : '40px';
-}
-
-function createSoundBtn(sound) {
-  const isClinical = sound.cat === 'clinical';
-  const btn = document.createElement('button');
-  btn.className = `sound-btn ${catClass[sound.cat]} btn-${sound.id}`;
-  btn.style.setProperty('color', catColor[sound.cat]);
-
-  if (isClinical) {
-    btn.style.opacity = '0.45';
-    btn.style.cursor = 'default';
-    btn.style.filter = 'grayscale(30%)';
-    btn.innerHTML = `
-      <span class="btn-icon">${sound.icon}</span>
-      <span class="btn-label">${sound.label}</span>
-      <span class="btn-sub" style="color:var(--clinical);opacity:0.8;font-size:0.62rem;letter-spacing:0.08em;">Coming Soon</span>
-    `;
-    btn.onclick = null;
-  } else {
-    btn.innerHTML = `
-      <div class="pulse-ring"></div>
-      <span class="btn-icon">${sound.icon}</span>
-      <span class="btn-label">${sound.label}</span>
-      <span class="btn-sub">${sound.sub}</span>
-      <div class="play-indicator">
-        <svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg>
-      </div>
-    `;
-    btn.onclick = () => toggleSound(sound);
-  }
-  return btn;
-}
-
-function buildGrids() {
-  const fillGrid = (gridId, soundList) => {
-    const g = document.getElementById(gridId);
-    if (g) soundList.forEach(s => g.appendChild(createSoundBtn(s)));
-  };
-
-  // All medical sounds in one flat grid — fills both All tab and Medical tab
-  const allMedical = sounds.filter(s => s.cat === 'medical');
-  fillGrid('grid-medical-all-combined', allMedical);
-  fillGrid('grid-medical-tab', allMedical);
-
-  // Other categories
-  ['fire', 'police', 'general', 'military', 'clinical'].forEach(cat => {
-    const catSounds = sounds.filter(s => s.cat === cat);
-    fillGrid(`grid-${cat}-all`, catSounds);
-    fillGrid(`grid-${cat}`, catSounds);
-  });
-}
-
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.grid-section').forEach(s => s.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  document.getElementById(`tab-${tab}`).classList.add('active');
-  // Clear search when switching tabs
-  const si = document.getElementById('searchInput');
-  if (si) si.value = '';
-  document.getElementById('tab-search').style.display = 'none';
-}
-
-function searchSounds(query) {
-  const q = query.trim().toLowerCase();
-  const searchSection = document.getElementById('tab-search');
-  const grid = document.getElementById('grid-search');
-  const empty = document.getElementById('search-empty');
-
-  if (!q) {
-    // Restore previous tab
-    searchSection.style.display = 'none';
-    const activeTab = document.querySelector('.tab.active');
-    const tabId = activeTab ? activeTab.getAttribute('onclick').match(/'(\w+)'/)[1] : 'all';
-    document.querySelectorAll('.grid-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(`tab-${tabId}`).classList.add('active');
-    return;
-  }
-
-  // Hide all tabs, show search
-  document.querySelectorAll('.grid-section').forEach(s => s.classList.remove('active'));
-  searchSection.style.display = 'block';
-
-  // Filter sounds
-  const matches = sounds.filter(s =>
-    s.label.toLowerCase().includes(q) ||
-    (s.sub && s.sub.toLowerCase().includes(q)) ||
-    s.cat.toLowerCase().includes(q)
-  );
-
-  grid.innerHTML = '';
-  if (matches.length === 0) {
-    empty.style.display = 'block';
-  } else {
-    empty.style.display = 'none';
-    matches.forEach(s => grid.appendChild(createSoundBtn(s)));
-  }
-}
-
-// ── SCENARIO DEFINITIONS ─────────────────────────────────────────────────────
-const scenarios = [
-  // Emergency Services
-  {
-    id: 'rtc', group: 'es',
-    label: 'Road Traffic Collision',
-    sub: 'Multi-vehicle RTC with casualties',
-    icon: '🚗',
-    color: '#4a9eff',
-    tag: 'POLICE / MEDICAL',
-    layers: [
-      { id: 'siren',   vol: 90 },
-      { id: 'traffic', vol: 65 },
-      { id: 'crash',   vol: 80 },
-      { id: 'horn',    vol: 55 },
-      { id: 'rain',    vol: 40 },
-      { id: 'crowd_fire', vol: 45 }
-    ]
-  },
-  {
-    id: 'structure_fire', group: 'es',
-    label: 'Structure Fire',
-    sub: 'Residential fire with occupants',
-    icon: '🔥',
-    color: '#ff6b35',
-    tag: 'FIRE & RESCUE',
-    layers: [
-      { id: 'alarm',      vol: 90 },
-      { id: 'crackling',  vol: 85 },
-      { id: 'hissing',    vol: 60 },
-      { id: 'crowd_fire', vol: 55 },
-      { id: 'radio_fire', vol: 70 },
-      { id: 'collapse',   vol: 50 }
-    ]
-  },
-  {
-    id: 'mass_casualty', group: 'es',
-    label: 'Mass Casualty Incident',
-    sub: 'MCI — multiple patients, chaotic scene',
-    icon: '🏥',
-    color: '#00c9a7',
-    tag: 'MEDICAL / FIRE',
-    layers: [
-      { id: 'siren',      vol: 80 },
-      { id: 'alarm',      vol: 65 },
-      { id: 'ecg',        vol: 85 },
-      { id: 'crowd_fire', vol: 60 },
-      { id: 'radio_fire', vol: 55 },
-      { id: 'helicopter', vol: 50 }
-    ]
-  },
-  {
-    id: 'hazmat', group: 'es',
-    label: 'Hazmat / Gas Leak',
-    sub: 'Chemical incident, evacuation in progress',
-    icon: '☣️',
-    color: '#f0c040',
-    tag: 'FIRE & RESCUE',
-    layers: [
-      { id: 'hissing',    vol: 90 },
-      { id: 'alarm',      vol: 80 },
-      { id: 'wind',       vol: 55 },
-      { id: 'radio_fire', vol: 65 },
-      { id: 'crowd_fire', vol: 50 }
-    ]
-  },
-  {
-    id: 'first_aid_comp', group: 'es',
-    label: 'First Aid Competition',
-    sub: 'Competitive scenario with bystanders',
-    icon: '🩺',
-    color: '#00c9a7',
-    tag: 'MEDICAL',
-    layers: [
-      { id: 'crowd_fire', vol: 70 },
-      { id: 'ecg',        vol: 80 },
-      { id: 'siren',      vol: 50 },
-      { id: 'rain',       vol: 35 }
-    ]
-  },
-  {
-    id: 'cas_evac', group: 'es',
-    label: 'Casualty Evacuation',
-    sub: 'CASEVAC — extracting casualties from scene',
-    icon: '🚑',
-    color: '#4a9eff',
-    tag: 'MEDICAL / POLICE',
-    layers: [
-      { id: 'helicopter', vol: 90 },
-      { id: 'siren',      vol: 70 },
-      { id: 'radio_fire', vol: 65 },
-      { id: 'shouting',   vol: 60 },
-      { id: 'traffic',    vol: 45 }
-    ]
-  },
-
-  // Military
-  {
-    id: 'active_contact', group: 'mil',
-    label: 'Active Contact',
-    sub: 'Small arms fire, troops in contact',
-    icon: '🔫',
-    color: '#8ab840',
-    tag: 'MILITARY',
-    layers: [
-      { id: 'gunfire',      vol: 95 },
-      { id: 'radio_mil',    vol: 70 },
-      { id: 'vehicles',     vol: 55 },
-      { id: 'wind_desert',  vol: 35 }
-    ]
-  },
-  {
-    id: 'ied_strike', group: 'mil',
-    label: 'IED Strike',
-    sub: 'Post-blast, multiple casualties',
-    icon: '💣',
-    color: '#ff6b35',
-    tag: 'MILITARY / TCCC',
-    layers: [
-      { id: 'explosion_mil', vol: 100 },
-      { id: 'shouting_mil',  vol: 80 },
-      { id: 'radio_mil',     vol: 70 },
-      { id: 'wind_desert',   vol: 40 },
-      { id: 'chaos',         vol: 65 }
-    ]
-  },
-  {
-    id: 'fob_ambush', group: 'mil',
-    label: 'FOB Ambush',
-    sub: 'Sustained attack, indirect fire incoming',
-    icon: '🌪️',
-    color: '#ff4444',
-    tag: 'MILITARY',
-    layers: [
-      { id: 'mortar',        vol: 90 },
-      { id: 'gunfire',       vol: 85 },
-      { id: 'explosion_mil', vol: 80 },
-      { id: 'shouting_mil',  vol: 75 },
-      { id: 'radio_mil',     vol: 65 },
-      { id: 'jets',          vol: 60 },
-      { id: 'chaos',         vol: 70 }
-    ]
-  },
-  {
-    id: 'cas_support', group: 'mil',
-    label: 'CAS / Air Support',
-    sub: 'Fast air overhead, ground troops advancing',
-    icon: '✈️',
-    color: '#4a9eff',
-    tag: 'MILITARY',
-    layers: [
-      { id: 'jets',          vol: 95 },
-      { id: 'radio_mil',     vol: 75 },
-      { id: 'shouting_mil',  vol: 65 },
-      { id: 'vehicles',      vol: 60 },
-      { id: 'wind_desert',   vol: 40 }
-    ]
-  }
-];
-
-function loadScenario(scenario) {
-  // Stop all current sounds first
-  stopAll();
-
-  // Small delay so stopAll clears before loading
-  setTimeout(() => {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    scenario.layers.forEach(layer => {
-      const sound = sounds.find(s => s.id === layer.id);
-      if (!sound) return;
-      const vol = layer.vol / 100;
-      soundVolumes[sound.id] = vol;
-      if (sound.url) {
-        activeNodes[sound.id] = makeRealAudio(sound, vol);
-      } else {
-        activeNodes[sound.id] = makeOscillator(sound, vol);
-      }
-      document.querySelectorAll(`.btn-${sound.id}`).forEach(b => b.classList.add('playing'));
-    });
-    updateMixer();
-
-    // Flash active scenario card
-    document.querySelectorAll('.scenario-card').forEach(c => c.classList.remove('scenario-active'));
-    const card = document.getElementById(`scenario-${scenario.id}`);
-    if (card) card.classList.add('scenario-active');
-  }, 80);
-}
-
-function buildScenarios() {
-  const esGrid = document.getElementById('scenario-grid-es');
-  const milGrid = document.getElementById('scenario-grid-mil');
-
-  scenarios.forEach(sc => {
-    const grid = sc.group === 'es' ? esGrid : milGrid;
-    const layerPreviews = sc.layers.map(l => {
-      const s = sounds.find(x => x.id === l.id);
-      return s ? `<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 7px;font-size:0.65rem;letter-spacing:0.05em;">${s.icon} ${s.label}</span>` : '';
-    }).join('');
-
-    const card = document.createElement('div');
-    card.className = 'scenario-card';
-    card.id = `scenario-${sc.id}`;
-    card.style.cssText = `
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 4px solid ${sc.color};
-      border-radius: 12px;
-      padding: 16px 18px;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      overflow: hidden;
-    `;
-    card.innerHTML = `
-      <div style="display:flex;align-items:flex-start;gap:14px;">
-        <span style="font-size:2rem;line-height:1;flex-shrink:0;">${sc.icon}</span>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.label}</span>
-            <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:${sc.color};background:${sc.color}18;border:1px solid ${sc.color}44;border-radius:4px;padding:1px 7px;">${sc.tag}</span>
-          </div>
-          <div style="font-size:0.75rem;color:var(--muted);margin-bottom:10px;">${sc.sub}</div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px;">${layerPreviews}</div>
-        </div>
-        <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="
-            width:38px;height:38px;border-radius:50%;
-            background:${sc.color}22;border:2px solid ${sc.color};
-            display:flex;align-items:center;justify-content:center;
-            font-size:1rem;transition:all 0.2s;
-          " class="sc-play-icon">▶</div>
-          <span style="font-size:0.6rem;color:var(--muted);letter-spacing:0.06em;">${sc.layers.length} SOUNDS</span>
-        </div>
-      </div>
-    `;
-    card.onclick = () => loadScenario(sc);
-    card.onmouseenter = () => { card.style.borderColor = sc.color; card.style.transform = 'translateY(-2px)'; };
-    card.onmouseleave = () => {
-      if (!card.classList.contains('scenario-active')) card.style.borderColor = 'var(--border)';
-      card.style.transform = '';
-    };
-    grid.appendChild(card);
-  });
-}
-
-buildGrids();
-buildScenarios();
-// Apply access control after all grids are rendered
-setTimeout(applyAccessControl, 200);
-
-// ── CUSTOM SCENARIO BUILDER ───────────────────────────────────────────────────
-const ICONS = ['🚑','🚒','🚔','🏥','🔥','💥','🚁','🛡️','⚠️','☣️','🌊','🏔️','🌪️','🌧️','🎯','📡','🩺','🩸','💊','🛠️','⚡','🔦','🗺️','🎖️'];
-let selectedIcon = '🎯';
-const builderSelected = {}; // id -> vol (0-100)
-
-function buildIconPicker() {
-  const picker = document.getElementById('icon-picker');
-  ICONS.forEach(ic => {
-    const btn = document.createElement('button');
-    btn.textContent = ic;
-    btn.dataset.icon = ic;
-    btn.style.cssText = `
-      width:36px;height:36px;border-radius:8px;border:1px solid var(--border);
-      background:var(--surface);font-size:1.1rem;cursor:pointer;
-      transition:all 0.15s;display:flex;align-items:center;justify-content:center;
-    `;
-    btn.onclick = () => {
-      selectedIcon = ic;
-      document.querySelectorAll('#icon-picker button').forEach(b => {
-        b.style.borderColor = 'var(--border)';
-        b.style.background = 'var(--surface)';
-      });
-      btn.style.borderColor = '#b48aff';
-      btn.style.background = '#b48aff22';
-    };
-    picker.appendChild(btn);
-  });
-  // Select first by default
-  picker.querySelector('button[data-icon="🎯"]').click();
-}
-
-function buildBuilderSoundList() {
-  const list = document.getElementById('builder-sound-list');
-  list.innerHTML = '';
-  sounds.forEach(sound => {
-    const color = catColor[sound.cat];
-    const row = document.createElement('div');
-    row.style.cssText = `
-      display:flex;align-items:center;gap:10px;
-      padding:8px 12px;border-radius:8px;
-      border:1px solid var(--border);
-      background:rgba(255,255,255,0.02);
-      transition:border-color 0.2s;
-    `;
-    row.innerHTML = `
-      <input type="checkbox" id="bc-${sound.id}" style="width:16px;height:16px;accent-color:#b48aff;flex-shrink:0;cursor:pointer;"
-        onchange="toggleBuilderSound('${sound.id}', this.checked)">
-      <span style="font-size:1.1rem;flex-shrink:0;">${sound.icon}</span>
-      <div style="flex:1;min-width:0;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.04em;color:${color};">${sound.label}</div>
-        <div style="font-size:0.62rem;color:var(--muted);">${sound.sub}</div>
-      </div>
-      <div id="bvol-wrap-${sound.id}" style="display:none;align-items:center;gap:6px;min-width:110px;">
-        <input type="range" id="bvol-${sound.id}" min="0" max="100" value="80"
-          style="-webkit-appearance:none;width:70px;height:3px;background:#1e2329;border-radius:2px;outline:none;accent-color:${color};"
-          oninput="updateBuilderVol('${sound.id}', this.value)">
-        <span id="bvol-val-${sound.id}" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.72rem;color:var(--muted);width:28px;text-align:right;">80%</span>
-      </div>
-    `;
-    list.appendChild(row);
-  });
-}
-
-function toggleBuilderSound(id, checked) {
-  const wrap = document.getElementById(`bvol-wrap-${id}`);
-  if (checked) {
-    builderSelected[id] = parseInt(document.getElementById(`bvol-${id}`).value);
-    wrap.style.display = 'flex';
-  } else {
-    delete builderSelected[id];
-    wrap.style.display = 'none';
-  }
-}
-
-function updateBuilderVol(id, val) {
-  builderSelected[id] = parseInt(val);
-  document.getElementById(`bvol-val-${id}`).textContent = val + '%';
-}
-
-function saveCustomScenario() {
-  const name = document.getElementById('custom-name').value.trim();
-  const msg = document.getElementById('builder-msg');
-
-  if (!name) { msg.style.color = '#ff6b35'; msg.textContent = '⚠ Please enter a scenario name.'; return; }
-  const layers = Object.entries(builderSelected);
-  if (layers.length < 1) { msg.style.color = '#ff6b35'; msg.textContent = '⚠ Select at least one sound.'; return; }
-
-  const sc = {
-    id: 'custom_' + Date.now(),
-    name,
-    icon: selectedIcon,
-    layers: layers.map(([id, vol]) => ({ id, vol })),
-    savedAt: new Date().toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' })
-  };
-
-  const saved = loadSavedScenarios();
-  saved.push(sc);
-  localStorage.setItem('scenesounds_scenarios', JSON.stringify(saved));
-
-  msg.style.color = '#00c9a7';
-  msg.textContent = `✓ "${name}" saved!`;
-  document.getElementById('custom-name').value = '';
-
-  // Reset checkboxes
-  Object.keys(builderSelected).forEach(id => {
-    const cb = document.getElementById(`bc-${id}`);
-    if (cb) cb.checked = false;
-    const wrap = document.getElementById(`bvol-wrap-${id}`);
-    if (wrap) wrap.style.display = 'none';
-    delete builderSelected[id];
-  });
-
-  renderCustomScenarios();
-  setTimeout(() => { msg.textContent = ''; }, 3000);
-}
-
-function loadSavedScenarios() {
-  try { return JSON.parse(localStorage.getItem('scenesounds_scenarios') || '[]'); }
-  catch { return []; }
-}
-
-function deleteCustomScenario(id) {
-  const saved = loadSavedScenarios().filter(s => s.id !== id);
-  localStorage.setItem('scenesounds_scenarios', JSON.stringify(saved));
-  renderCustomScenarios();
-}
-
-function renderCustomScenarios() {
-  const grid = document.getElementById('scenario-grid-custom');
-  const noMsg = document.getElementById('no-custom-msg');
-  const saved = loadSavedScenarios();
-
-  // Clear existing custom cards (keep no-msg)
-  grid.querySelectorAll('.custom-card').forEach(c => c.remove());
-
-  if (saved.length === 0) {
-    noMsg.style.display = 'block';
-    return;
-  }
-  noMsg.style.display = 'none';
-
-  saved.forEach(sc => {
-    const layerPreviews = sc.layers.map(l => {
-      const s = sounds.find(x => x.id === l.id);
-      return s ? `<span style="background:rgba(255,255,255,0.06);border-radius:4px;padding:2px 7px;font-size:0.65rem;letter-spacing:0.05em;">${s.icon} ${s.label}</span>` : '';
-    }).join('');
-
-    const card = document.createElement('div');
-    card.className = 'custom-card';
-    card.style.cssText = `
-      background:var(--surface);
-      border:1px solid var(--border);
-      border-left:4px solid #b48aff;
-      border-radius:12px;padding:16px 18px;
-      cursor:pointer;transition:all 0.2s;position:relative;
-    `;
-    card.innerHTML = `
-      <div style="display:flex;align-items:flex-start;gap:14px;">
-        <span style="font-size:2rem;line-height:1;flex-shrink:0;">${sc.icon}</span>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
-            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.05em;">${sc.name}</span>
-            <span style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.12em;color:#b48aff;background:#b48aff18;border:1px solid #b48aff44;border-radius:4px;padding:1px 7px;">CUSTOM</span>
-          </div>
-          <div style="font-size:0.7rem;color:var(--muted);margin-bottom:8px;">Saved ${sc.savedAt} · ${sc.layers.length} sounds</div>
-          <div style="display:flex;flex-wrap:wrap;gap:5px;">${layerPreviews}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
-          <div style="width:38px;height:38px;border-radius:50%;background:#b48aff22;border:2px solid #b48aff;display:flex;align-items:center;justify-content:center;font-size:1rem;">▶</div>
-          <button onclick="event.stopPropagation();deleteCustomScenario('${sc.id}')" style="
-            background:none;border:1px solid var(--border);color:var(--muted);
-            width:38px;height:28px;border-radius:6px;cursor:pointer;font-size:0.7rem;
-            transition:all 0.2s;
-          " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
-             onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">🗑</button>
-        </div>
-      </div>
-    `;
-    card.onclick = () => {
-      stopAll();
-      setTimeout(() => {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        sc.layers.forEach(layer => {
-          const sound = sounds.find(s => s.id === layer.id);
-          if (!sound) return;
-          const vol = layer.vol / 100;
-          soundVolumes[sound.id] = vol;
-          if (sound.url) activeNodes[sound.id] = makeRealAudio(sound, vol);
-          else activeNodes[sound.id] = makeOscillator(sound, vol);
-          document.querySelectorAll(`.btn-${sound.id}`).forEach(b => b.classList.add('playing'));
-        });
-        updateMixer();
-      }, 80);
-    };
-    card.onmouseenter = () => { card.style.borderColor = '#b48aff'; card.style.transform = 'translateY(-2px)'; };
-    card.onmouseleave = () => { card.style.borderColor = 'var(--border)'; card.style.transform = ''; };
-    grid.appendChild(card);
-  });
-}
-
-buildIconPicker();
-buildBuilderSoundList();
-renderCustomScenarios();
-</script>
-<!-- Feedback bubble -->
-<div onclick="openFeedback()" style="
-  position:fixed;
-  bottom:24px;right:16px;
-  border-radius:100px;
-  background:var(--fire);
-  display:flex;align-items:center;justify-content:center;
-  gap:4px;
-  padding:7px 12px;
-  cursor:pointer;
-  z-index:500;
-  box-shadow:0 4px 16px rgba(255,107,53,0.35);
-  transition:all 0.2s;
-" onmouseover="this.style.transform='scale(1.05)';this.style.boxShadow='0 6px 22px rgba(255,107,53,0.55)'"
-   onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 4px 16px rgba(255,107,53,0.35)'"
-   title="Share Feedback">
-  <span style="font-size:0.75rem;">💬</span>
-  <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:#07090c;">Feedback</span>
-</div>
-
-<!-- Feedback tooltip removed -->
-
-<div style="
-  background:#07090c;
-  border-top:1px solid var(--border);
-  padding:16px 24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap;
-  gap:12px;
-  font-family:'Barlow Condensed',sans-serif;
-  font-size:0.68rem;
-  letter-spacing:0.08em;
-  color:var(--muted);
-  text-transform:uppercase;
-">
-  <span>SceneSounds.app &nbsp;·&nbsp; Sector 3 Group Ltd</span>
-  <div style="display:flex;gap:20px;align-items:center;">
-    <a href="/terms.html" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--fire)'" onmouseout="this.style.color='var(--muted)'">Terms</a>
-    <a href="/privacy.html" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='var(--fire)'" onmouseout="this.style.color='var(--muted)'">Privacy</a>
-  </div>
-</div>
-
-<script>
-async function doLogout() {
-  try {
-    await window.$memberstackDom.logout();
-  } catch(e) {}
-  sessionStorage.removeItem('ss_auth');
-  location.reload();
-}
-
-function openFeedback() {
-  window.open('https://www.cognitoforms.com/SceneSounds1/SceneSoundsFeedback', '_blank');
-}
-
-// Pause / Resume all sounds
-let isPaused = false;
-
-function pauseAll() {
-  const btn = document.getElementById('pauseAllBtn');
-  if (!isPaused) {
-    // Pause all real audio
-    Object.keys(activeNodes).forEach(id => {
-      const node = activeNodes[id];
-      if (node.isReal && node.audio) {
-        node.audio.pause();
-      } else if (!node.isReal && node.gainNode) {
-        node.gainNode.gain.value = 0;
-      }
-    });
-    isPaused = true;
-    btn.textContent = '▶ Resume';
-    btn.style.borderColor = 'var(--fire)';
-    btn.style.color = 'var(--fire)';
-  } else {
-    // Resume all
-    Object.keys(activeNodes).forEach(id => {
-      const node = activeNodes[id];
-      const vol = soundVolumes[id] ?? 0.8;
-      if (node.isReal && node.audio) {
-        node.audio.play().catch(e => console.warn(e));
-      } else if (!node.isReal && node.gainNode) {
-        const sound = sounds.find(s => s.id === id);
-        const base = sound && sound.pulse ? 0.08 : 0.12;
-        const v = calcVolume(soundVolumes[id] ?? 0.8, masterVolumeLevel);
-        node.gainNode.gain.value = base * v;
-      }
-    });
-    isPaused = false;
-    btn.textContent = '⏸ Pause';
-    btn.style.borderColor = 'var(--border)';
-    btn.style.color = 'var(--muted)';
-  }
-}
-</script>
-
-
-
+<!-- Google Translate -->
 </body>
 </html>
