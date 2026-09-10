@@ -563,11 +563,17 @@ async function doSignup() {
 
   err.textContent = 'Creating account...';
   try {
+    // Create account
     await window.$memberstackDom.signupMemberEmailPassword({
       email, password,
-      customFields: { name },
-      planIds: [{ planId: 'pln_free--435m0z2e' }]
+      customFields: { name }
     });
+    // Add free plan immediately after signup
+    try {
+      await window.$memberstackDom.addPlan({ planId: 'pln_free--435m0z2e' });
+    } catch(planErr) {
+      console.log('[SS] Plan assign note:', planErr);
+    }
     currentPlan = 'free';
     hideAuthScreen();
   } catch(e) {
