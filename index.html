@@ -607,12 +607,9 @@ const FREE_SCENARIO_LIMIT = 2;
 function applyAccessControl() {
   if (currentPlan === 'pro') return;
 
-  // Retry until sound buttons are in the DOM
+  // Confirm buttons exist
   const testBtn = document.querySelector('.sound-btn');
-  if (!testBtn) {
-    setTimeout(applyAccessControl, 300);
-    return;
-  }
+  if (!testBtn) return;
 
   // Show upgrade banner and Try Pro button
   const banner = document.getElementById('upgradeBanner');
@@ -676,8 +673,16 @@ function hideAuthScreen() {
   screen.style.transition = 'opacity 0.4s';
   setTimeout(() => {
     screen.style.display = 'none';
-    // Apply access control after grids are built
-    setTimeout(applyAccessControl, 800);
+    // Poll until sound buttons exist, then lock
+    function waitForGrids() {
+      const btns = document.querySelectorAll('.sound-btn');
+      if (btns.length > 10) {
+        applyAccessControl();
+      } else {
+        setTimeout(waitForGrids, 200);
+      }
+    }
+    waitForGrids();
     // Show pricing modal after 4 seconds for free users
     if (currentPlan === 'free') {
       setTimeout(showPricingModal, 4000);
@@ -1874,8 +1879,7 @@ function buildScenarios() {
 
 buildGrids();
 buildScenarios();
-// Apply access control after all grids are rendered
-setTimeout(applyAccessControl, 200);
+// Access control runs ONLY after Memberstack confirms the plan — not at load time
 
 // ── CUSTOM SCENARIO BUILDER ───────────────────────────────────────────────────
 const ICONS = ['🚑','🚒','🚔','🏥','🔥','💥','🚁','🛡️','⚠️','☣️','🌊','🏔️','🌪️','🌧️','🎯','📡','🩺','🩸','💊','🛠️','⚡','🔦','🗺️','🎖️'];
