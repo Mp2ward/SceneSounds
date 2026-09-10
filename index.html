@@ -521,20 +521,10 @@ async function initAuth() {
         )
       );
       currentPlan = isPro ? 'pro' : 'free';
-
-      // Temp debug panel
-      const dbg = document.createElement('div');
-      dbg.style.cssText = 'position:fixed;bottom:60px;left:10px;right:10px;background:#111;color:#0f0;font-family:monospace;font-size:0.7rem;padding:10px;border-radius:8px;z-index:9999;border:1px solid #0f0;max-height:200px;overflow:auto;';
-      dbg.innerHTML = '<strong>DEBUG</strong><br>Plan: ' + currentPlan + '<br>planConnections: ' + JSON.stringify(plans) + '<br><button onclick="this.parentNode.remove()" style="margin-top:6px;background:#333;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">Close</button>';
-      document.body.appendChild(dbg);
-
       hideAuthScreen();
     }
   } catch(e) {
-    const dbg = document.createElement('div');
-    dbg.style.cssText = 'position:fixed;bottom:60px;left:10px;right:10px;background:#111;color:#f00;font-family:monospace;font-size:0.7rem;padding:10px;border-radius:8px;z-index:9999;border:1px solid #f00;';
-    dbg.innerHTML = '<strong>AUTH ERROR</strong><br>' + e.message + '<br><button onclick="this.parentNode.remove()" style="margin-top:6px;background:#333;color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">Close</button>';
-    document.body.appendChild(dbg);
+    // Not logged in — stay on auth screen
   }
 }
 
@@ -615,7 +605,14 @@ const FREE_LIMIT = 6;
 const FREE_SCENARIO_LIMIT = 2;
 
 function applyAccessControl() {
-  if (currentPlan === 'pro') return; // Full access — do nothing
+  if (currentPlan === 'pro') return;
+
+  // Retry until sound buttons are in the DOM
+  const testBtn = document.querySelector('.sound-btn');
+  if (!testBtn) {
+    setTimeout(applyAccessControl, 300);
+    return;
+  }
 
   // Show upgrade banner and Try Pro button
   const banner = document.getElementById('upgradeBanner');
@@ -751,12 +748,19 @@ if (sessionStorage.getItem('ss_auth') === '1') {
       </div>
 
       <!-- CTA -->
-      <a href="https://scenesounds.app?ms-plan-add=prc_pro-monthly-c9py0vvw" target="_blank" style="display:block;text-align:center;
+      <button data-ms-price:add="prc_pro-monthly-c9py0vvw" style="display:block;width:100%;text-align:center;
         background:#ff6b35;color:#07090c;padding:14px;border-radius:8px;
         font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
-        letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;margin-bottom:10px;">
-        Upgrade to Pro — £3.99/mo
-      </a>
+        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;border:none;">
+        Monthly — £3.99/mo
+      </button>
+      <button data-ms-price:add="prc_pro-annual-m5pz0vzt" style="display:block;width:100%;text-align:center;
+        background:transparent;color:#ff6b35;padding:13px;border-radius:8px;
+        font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
+        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;
+        border:1px solid #ff6b35;">
+        Annual — £39.00/yr <span style="font-size:0.75rem;opacity:0.7;">(save £8.88)</span>
+      </button>
       <button onclick="closePricingModal()" style="display:block;width:100%;background:none;
         border:1px solid #1a1f28;border-radius:8px;padding:11px;
         color:#5a6270;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;
