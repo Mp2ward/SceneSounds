@@ -394,417 +394,17 @@
 </head>
 <body>
 
-<!-- Memberstack -->
-<script data-memberstack-app="app_cmtt1sudl006y0stu6l1h8b1l" src="https://static.memberstack.com/scripts/v2/memberstack.js" type="text/javascript"></script>
-
-<!-- AUTH SCREEN -->
-<div id="authScreen" style="
-  position:fixed;inset:0;z-index:9999;
-  background:var(--bg);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:32px;
-">
-  <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,107,53,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,53,0.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;"></div>
-  <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,53,0.1) 0%,transparent 70%);pointer-events:none;"></div>
-
-  <div style="position:relative;z-index:2;text-align:center;width:100%;max-width:340px;">
-    <!-- Logo -->
-    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:32px;">
-      <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
-        <rect x="10" y="35" width="10" height="30" rx="5" fill="#ff6b35"/>
-        <rect x="25" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-        <rect x="40" y="10" width="10" height="80" rx="5" fill="#ff6b35"/>
-        <rect x="55" y="20" width="10" height="60" rx="5" fill="#ff6b35" opacity="0.85"/>
-        <rect x="70" y="35" width="10" height="30" rx="5" fill="#ff6b35" opacity="0.7"/>
-        <rect x="85" y="42" width="10" height="16" rx="5" fill="#ff6b35" opacity="0.5"/>
-      </svg>
-      <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.4rem;letter-spacing:0.1em;color:var(--text);line-height:1;">SCENE <span style="color:var(--fire);">SOUNDS</span></div>
-        <div style="font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-top:2px;">Scenario with Sound</div>
-      </div>
-    </div>
-
-    <!-- Tab switcher -->
-    <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;gap:4px;">
-      <button id="tabLogin" onclick="showTab('login')" style="flex:1;padding:9px;border:none;border-radius:7px;background:var(--fire);color:#0a0c0f;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">LOG IN</button>
-      <button id="tabSignup" onclick="showTab('signup')" style="flex:1;padding:9px;border:none;border-radius:7px;background:transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;cursor:pointer;">SIGN UP</button>
-    </div>
-
-    <!-- Login form -->
-    <div id="formLogin" style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-      <input id="loginEmail" type="email" placeholder="Email address" autocomplete="email"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password"
-        onkeydown="if(event.key==='Enter')doLogin()"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:16px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <button onclick="doLogin()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Log In</button>
-      <p id="loginError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-      <a href="#" onclick="doForgotPassword()" style="display:block;margin-top:8px;font-size:0.75rem;color:var(--muted);text-decoration:none;">Forgot password?</a>
-    </div>
-
-    <!-- Signup form -->
-    <div id="formSignup" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;">
-      <input id="signupName" type="text" placeholder="Full name" autocomplete="name"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="signupEmail" type="email" placeholder="Email address" autocomplete="email"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <input id="signupPassword" type="password" placeholder="Create password" autocomplete="new-password"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:12px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;text-align:left;">
-        <input type="checkbox" id="tcBoxSignup" style="width:18px;height:18px;flex-shrink:0;margin-top:2px;accent-color:var(--fire);cursor:pointer;">
-        <label for="tcBoxSignup" style="font-family:'Barlow',sans-serif;font-size:0.78rem;color:var(--muted);line-height:1.5;cursor:pointer;">
-          I agree to the <a href="https://scenesounds.com/terms.html" target="_blank" style="color:var(--fire);text-decoration:none;">Terms of Use</a> and <a href="https://scenesounds.com/privacy.html" target="_blank" style="color:var(--fire);text-decoration:none;">Privacy Policy</a>
-        </label>
-      </div>
-      <button onclick="doSignup()" style="width:100%;background:var(--fire);color:#0a0c0f;border:none;border-radius:8px;padding:13px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Create Free Account</button>
-      <p id="signupError" style="color:#ff4444;font-size:0.78rem;margin-top:10px;min-height:16px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-      <p style="font-size:0.72rem;color:var(--muted);margin-top:10px;">Free plan includes 6 sounds per category and 2 scenarios.</p>
-    </div>
-
-    <!-- Beta access divider -->
-    <div style="display:flex;align-items:center;gap:12px;margin:16px 0;">
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-      <span style="font-size:0.7rem;color:var(--muted);letter-spacing:0.1em;">OR</span>
-      <div style="flex:1;height:1px;background:var(--border);"></div>
-    </div>
-
-    <!-- Beta password -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;">
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">Access Code</p>
-      <input id="pwInput" type="password" placeholder="Access code"
-        onkeydown="if(event.key==='Enter')checkPassword()"
-        style="width:100%;background:#0a0c0f;border:1px solid var(--border);border-radius:8px;padding:11px 16px;margin-bottom:10px;font-family:'Barlow',sans-serif;font-size:0.95rem;color:var(--text);outline:none;text-align:center;letter-spacing:0.15em;"
-        onfocus="this.style.borderColor='var(--fire)'" onblur="this.style.borderColor='var(--border)'">
-      <button onclick="checkPassword()" style="width:100%;background:transparent;color:var(--fire);border:1px solid var(--fire);border-radius:8px;padding:10px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;">Enter</button>
-      <p id="pwError" style="color:#ff4444;font-size:0.75rem;margin-top:8px;min-height:14px;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.06em;"></p>
-    </div>
-
-    <p style="font-size:0.68rem;color:var(--muted);margin-top:16px;letter-spacing:0.06em;">
-      scenesounds.app · Sector 3 Group Ltd
-    </p>
-  </div>
-</div>
-
-
-
 <script>
-// ── TAB SWITCHER ────────────────────────────────────────────────────
-function showTab(tab) {
-  const isLogin = tab === 'login';
-  document.getElementById('formLogin').style.display = isLogin ? 'block' : 'none';
-  document.getElementById('formSignup').style.display = isLogin ? 'none' : 'block';
-  document.getElementById('tabLogin').style.background = isLogin ? 'var(--fire)' : 'transparent';
-  document.getElementById('tabLogin').style.color = isLogin ? '#0a0c0f' : 'var(--muted)';
-  document.getElementById('tabSignup').style.background = isLogin ? 'transparent' : 'var(--fire)';
-  document.getElementById('tabSignup').style.color = isLogin ? 'var(--muted)' : '#0a0c0f';
-}
+// ── OPEN ACCESS — Memberstack removed, every feature available to everyone ──
+let currentPlan = 'pro';
 
-// ── MEMBERSTACK AUTH ────────────────────────────────────────────────
-let currentPlan = 'locked'; // locked until Memberstack confirms
-
-async function initAuth() {
-  try {
-    const member = await window.$memberstackDom.getCurrentMember();
-    if (member && member.data) {
-      const plans = member.data.planConnections || [];
-      const isPro = plans.some(p =>
-        p.planId && (
-          p.planId === 'prc_pro-annual-m5pz0vzt' ||
-          p.planId === 'prc_pro-monthly-c9py0vvw' ||
-          p.planId.toLowerCase().includes('organisation')
-        )
-      );
-      // No plan or free plan = free tier
-      currentPlan = isPro ? 'pro' : 'free';
-      hideAuthScreen();
-    }
-  } catch(e) {
-    // Not logged in — stay on auth screen
-  }
-}
-
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const err = document.getElementById('loginError');
-  err.textContent = 'Signing in...';
-  try {
-    const { data } = await window.$memberstackDom.loginMemberEmailPassword({ email, password });
-    const plans = data.planConnections || [];
-    const isPro = plans.some(p =>
-      p.planId && (
-        p.planId === 'prc_pro-annual-m5pz0vzt' ||
-        p.planId === 'prc_pro-monthly-c9py0vvw' ||
-        p.planId.toLowerCase().includes('organisation')
-      )
-    );
-    currentPlan = isPro ? 'pro' : 'free';
-    hideAuthScreen();
-  } catch(e) {
-    err.textContent = e.message || 'Incorrect email or password';
-  }
-}
-
-async function doSignup() {
-  const name = document.getElementById('signupName').value.trim();
-  const email = document.getElementById('signupEmail').value.trim();
-  const password = document.getElementById('signupPassword').value;
-  const tc = document.getElementById('tcBoxSignup').checked;
-  const err = document.getElementById('signupError');
-
-  if (!tc) { err.textContent = 'Please accept the Terms of Use'; return; }
-  if (!name || !email || !password) { err.textContent = 'Please fill in all fields'; return; }
-
-  err.textContent = 'Creating account...';
-  try {
-    // Create account
-    await window.$memberstackDom.signupMemberEmailPassword({
-      email, password,
-      customFields: { name }
-    });
-    // Add free plan immediately after signup
-    try {
-      await window.$memberstackDom.addPlan({ planId: 'pln_free--435m0z2e' });
-    } catch(planErr) {
-      console.log('[SS] Plan assign note:', planErr);
-    }
-    currentPlan = 'free';
-    hideAuthScreen();
-  } catch(e) {
-    err.textContent = e.message || 'Could not create account';
-  }
-}
-
-async function doForgotPassword() {
-  const email = document.getElementById('loginEmail').value.trim();
-  if (!email) { document.getElementById('loginError').textContent = 'Enter your email first'; return; }
-  try {
-    await window.$memberstackDom.sendMemberResetPasswordEmail({ email });
-    document.getElementById('loginError').style.color = 'var(--teal)';
-    document.getElementById('loginError').textContent = 'Reset email sent';
-  } catch(e) {
-    document.getElementById('loginError').textContent = e.message || 'Could not send reset email';
-  }
-}
-
-// ── BETA PASSWORD (kept for current beta users) ─────────────────────
-function checkPassword() {
-  const input = document.getElementById('pwInput').value;
-  const error = document.getElementById('pwError');
-  if (['S3G', 'TRI', 'Babcock123'].includes(input)) {
-    currentPlan = 'pro'; // Beta users get full access
-    sessionStorage.setItem('ss_auth', '1');
-    hideAuthScreen();
-  } else {
-    error.textContent = 'Incorrect access code';
-    document.getElementById('pwInput').value = '';
-    setTimeout(() => error.textContent = '', 2000);
-  }
-}
-
-// ── ACCESS CONTROL ──────────────────────────────────────────────────
-const FREE_LIMIT = 6;
-const FREE_SCENARIO_LIMIT = 2;
-
-function applyAccessControl() {
-  if (currentPlan === 'pro') return;
-
-  // Confirm buttons exist
-  const testBtn = document.querySelector('.sound-btn');
-  if (!testBtn) return;
-
-  // Show upgrade banner and Try Pro button
-  const banner = document.getElementById('upgradeBanner');
-  banner.style.display = 'flex';
-  // Lock the scenario builder
-  const builder = document.getElementById('scenario-builder');
-  const builderLocked = document.getElementById('scenario-builder-locked');
-  if (builder) builder.style.display = 'none';
-  if (builderLocked) builderLocked.style.display = 'block';
-
-  // Lock sounds beyond first 6 per category
-  const cats = ['general','medical','fire','police','military','clinical'];
-  cats.forEach(cat => {
-    const soundsInCat = sounds.filter(s => s.cat === cat);
-    soundsInCat.slice(FREE_LIMIT).forEach(sound => {
-      const btn = document.querySelector(`.btn-${sound.id}`);
-      if (btn) lockButton(btn);
-    });
-  });
-
-  // Lock scenarios beyond first 2
-  const scenarioCards = document.querySelectorAll('.scenario-card');
-  scenarioCards.forEach((card, i) => {
-    if (i >= FREE_SCENARIO_LIMIT) lockScenarioCard(card);
-  });
-}
-
-function lockButton(btn) {
-  btn.style.opacity = '0.35';
-  btn.style.cursor = 'pointer';
-  btn.style.filter = 'grayscale(60%)';
-  btn.onclick = showUpgradePrompt;
-  // Add lock badge
-  const badge = document.createElement('div');
-  badge.innerHTML = '🔒';
-  badge.style.cssText = 'position:absolute;top:6px;right:6px;font-size:0.7rem;';
-  btn.style.position = 'relative';
-  btn.appendChild(badge);
-}
-
-function lockScenarioCard(card) {
-  card.style.opacity = '0.35';
-  card.style.filter = 'grayscale(60%)';
-  card.style.cursor = 'pointer';
-  card.onclick = showUpgradePrompt;
-  const badge = document.createElement('div');
-  badge.innerHTML = '🔒 Pro';
-  badge.style.cssText = 'position:absolute;top:8px;right:8px;font-size:0.65rem;background:rgba(255,107,53,0.9);color:#0a0c0f;padding:2px 7px;border-radius:4px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;';
-  card.style.position = 'relative';
-  card.appendChild(badge);
-}
-
-function showUpgradePrompt() {
-  showPricingModal();
-}
-
-// ── HIDE AUTH SCREEN & BOOT APP ─────────────────────────────────────
-function hideAuthScreen() {
-  const screen = document.getElementById('authScreen');
-  screen.style.opacity = '0';
-  screen.style.transition = 'opacity 0.4s';
-  setTimeout(() => {
-    screen.style.display = 'none';
-    // Build grids NOW — plan is confirmed so locking bakes in correctly
-    buildGrids();
-    buildScenarios();
-    applyAccessControl();
-    // Show pricing modal after 4 seconds for free users
-    if (currentPlan === 'free') {
-      setTimeout(showPricingModal, 4000);
-    }
-  }, 400);
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────
-// Hide main content until auth is confirmed
-document.body.style.visibility = 'hidden';
-
-if (sessionStorage.getItem('ss_auth') === '1') {
-  document.addEventListener('DOMContentLoaded', () => {
-    currentPlan = 'pro';
-    document.body.style.visibility = 'visible';
-    hideAuthScreen();
-  });
-} else {
-  window.addEventListener('load', () => {
-    document.body.style.visibility = 'visible';
-    setTimeout(initAuth, 500);
-  });
-}
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.style.visibility = 'visible';
+  buildGrids();
+  buildScenarios();
+});
 </script>
 
-<!-- PRICING POPUP — shown after 4 seconds to free users -->
-<div id="pricingModal" style="display:none;position:fixed;inset:0;z-index:8000;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);
-  align-items:center;justify-content:center;padding:24px;">
-  <div style="background:#0f1318;border:1px solid #252b35;border-radius:16px;
-    max-width:400px;width:100%;position:relative;overflow:hidden;
-    box-shadow:0 32px 80px rgba(0,0,0,0.9);">
-
-    <!-- Orange top bar -->
-    <div style="height:3px;background:#ff6b35;width:100%;"></div>
-
-    <div style="padding:28px 28px 24px;">
-      <!-- Close -->
-      <button onclick="closePricingModal()" style="position:absolute;top:16px;right:16px;
-        background:#1a1f28;border:none;color:#8a9ab0;font-size:1rem;cursor:pointer;
-        width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:1;">✕</button>
-
-      <!-- Header -->
-      <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.68rem;letter-spacing:0.2em;
-        text-transform:uppercase;color:#ff6b35;margin-bottom:10px;">Upgrade</p>
-      <h2 style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.9rem;
-        color:#f0f2f5;line-height:1.1;margin-bottom:8px;">Unlock everything</h2>
-      <p style="font-size:0.84rem;color:#5a6270;line-height:1.6;margin-bottom:24px;">All sounds, all scenarios and the custom scenario builder.</p>
-
-      <!-- Plans -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;">
-        <!-- Free -->
-        <div style="background:#07090c;border:1px solid #1a1f28;border-radius:10px;padding:14px;">
-          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;letter-spacing:0.16em;
-            text-transform:uppercase;color:#5a6270;margin-bottom:8px;">Free</p>
-          <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;
-            color:#f0f2f5;line-height:1;margin-bottom:10px;">£0</p>
-          <p style="font-size:0.78rem;color:#5a6270;line-height:1.6;">6 sounds per category<br>2 scenarios</p>
-        </div>
-        <!-- Pro -->
-        <div style="background:#1a1208;border:1px solid #ff6b35;border-radius:10px;padding:14px;">
-          <p style="font-family:'Barlow Condensed',sans-serif;font-size:0.62rem;letter-spacing:0.16em;
-            text-transform:uppercase;color:#ff6b35;margin-bottom:8px;">Pro</p>
-          <div style="display:flex;align-items:flex-end;gap:3px;margin-bottom:10px;">
-            <p style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:2rem;
-              color:#f0f2f5;line-height:1;">£3.99</p>
-            <p style="font-size:0.72rem;color:#5a6270;padding-bottom:4px;">/mo</p>
-          </div>
-          <p style="font-size:0.78rem;color:#f0f2f5;line-height:1.6;">All 85+ sounds<br>All 11 scenarios<br>Custom builder</p>
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <button onclick="upgradePlan('prc_pro-monthly-c9py0vvw')" style="display:block;width:100%;text-align:center;
-        background:#ff6b35;color:#07090c;padding:14px;border-radius:8px;
-        font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
-        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;border:none;">
-        Monthly — £3.99/mo
-      </button>
-      <button onclick="upgradePlan('prc_pro-annual-m5pz0vzt')" style="display:block;width:100%;text-align:center;
-        background:transparent;color:#ff6b35;padding:13px;border-radius:8px;
-        font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1rem;
-        letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;cursor:pointer;
-        border:1px solid #ff6b35;">
-        Annual — £39.00/yr <span style="font-size:0.75rem;opacity:0.7;">(save £8.88)</span>
-      </button>
-      <button onclick="closePricingModal()" style="display:block;width:100%;background:none;
-        border:1px solid #1a1f28;border-radius:8px;padding:11px;
-        color:#5a6270;font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;
-        letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">
-        Continue with free
-      </button>
-
-      <p style="font-size:0.72rem;color:#3a4250;text-align:center;margin-top:14px;">
-        Organisation licence? <a href="mailto:info@scenesounds.app" style="color:#ff6b35;text-decoration:none;">Get in touch</a>
-      </p>
-    </div>
-  </div>
-</div>
-
-<script>
-function closePricingModal() {
-  document.getElementById('pricingModal').style.display = 'none';
-}
-async function upgradePlan(priceId) {
-  try {
-    await window.$memberstackDom.purchasePlansWithCheckout({
-      priceId: priceId
-    });
-  } catch(e) {
-    // Fallback — open Memberstack hosted checkout
-    window.open(`https://checkout.memberstack.com/buy/${priceId}`, '_blank');
-  }
-}
-function showPricingModal() {
-  if (currentPlan === 'pro') return; // Only show to free/locked users
-  const modal = document.getElementById('pricingModal');
-  modal.style.display = 'flex';
-}
-</script>
 
 <header>
   <div style="display:flex;align-items:center;gap:14px;">
@@ -826,9 +426,6 @@ function showPricingModal() {
     <span class="dot"></span>STANDBY
   </div>
   <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-    <!-- Try Pro button — only shown to free users -->
-
-    <!-- Log Out -->
     <a href="mailto:info@scenesounds.app" style="
       background:none;border:1px solid var(--border);color:var(--muted);
       padding:6px 14px;border-radius:6px;
@@ -838,14 +435,6 @@ function showPricingModal() {
       transition:all 0.2s;
     " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
        onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Contact</a>
-    <button onclick="doLogout()" style="
-      background:none;border:1px solid var(--border);color:var(--muted);
-      padding:6px 14px;border-radius:6px;
-      font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:0.75rem;
-      letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
-      flex-shrink:0;transition:all 0.2s;
-    " onmouseover="this.style.borderColor='#ff6b35';this.style.color='#ff6b35'"
-       onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">Log Out</button>
   </div>
 </header>
 
@@ -980,15 +569,7 @@ function showPricingModal() {
     <div id="no-custom-msg" style="color:var(--muted);font-size:0.8rem;padding:12px 4px;letter-spacing:0.04em;">No saved scenarios yet — build one below.</div>
   </div>
 
-  <!-- Builder — Pro only -->
-  <div id="scenario-builder-locked" style="display:none;background:var(--surface);border:1px solid rgba(180,138,255,0.2);border-radius:14px;padding:28px 20px;margin-bottom:32px;text-align:center;">
-    <div style="font-size:2rem;margin-bottom:12px;">🔒</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.1rem;letter-spacing:0.08em;color:#b48aff;margin-bottom:8px;">MAKE YOUR OWN</div>
-    <p style="font-size:0.85rem;color:var(--muted);line-height:1.6;margin-bottom:20px;">Build and save your own custom scenarios.<br>Available on Pro.</p>
-    <button onclick="showPricingModal()" style="background:var(--fire);color:#0a0c0f;border:none;border-radius:7px;padding:11px 28px;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;">⚡ Try Pro — £3.99/mo</button>
-  </div>
-
-  <!-- Builder — shown to Pro users -->
+  <!-- Builder -->
   <div id="scenario-builder" style="
     background:var(--surface);
     border:1px solid #b48aff44;
@@ -1550,9 +1131,6 @@ function updateMixer() {
   document.body.style.paddingBottom = count > 0 ? '220px' : '40px';
 }
 
-// Track how many sounds per category have been created
-const catCount = {};
-
 function createSoundBtn(sound) {
   const isClinical = sound.cat === 'clinical';
   const btn = document.createElement('button');
@@ -1560,24 +1138,6 @@ function createSoundBtn(sound) {
   btn.style.setProperty('color', catColor[sound.cat]);
 
   // Free plan locking — count sounds per category
-  if (!isClinical && currentPlan !== 'pro') {
-    catCount[sound.cat] = (catCount[sound.cat] || 0) + 1;
-    if (catCount[sound.cat] > FREE_LIMIT) {
-      btn.style.opacity = '0.35';
-      btn.style.cursor = 'pointer';
-      btn.style.filter = 'grayscale(60%)';
-      btn.style.position = 'relative';
-      btn.innerHTML = `
-        <span class="btn-icon">${sound.icon}</span>
-        <span class="btn-label">${sound.label}</span>
-        <span class="btn-sub">${sound.sub}</span>
-        <div style="position:absolute;top:6px;right:6px;font-size:0.7rem;">🔒</div>
-      `;
-      btn.onclick = () => showPricingModal();
-      return btn;
-    }
-  }
-
   if (isClinical) {
     btn.style.opacity = '0.45';
     btn.style.cursor = 'default';
@@ -1914,7 +1474,7 @@ function buildScenarios() {
   });
 }
 
-// Grids built after auth confirms plan — see hideAuthScreen()
+// Grids are built once on page load — see the boot script near the top of <body>
 
 // ── CUSTOM SCENARIO BUILDER ───────────────────────────────────────────────────
 const ICONS = ['🚑','🚒','🚔','🏥','🔥','💥','🚁','🛡️','⚠️','☣️','🌊','🏔️','🌪️','🌧️','🎯','📡','🩺','🩸','💊','🛠️','⚡','🔦','🗺️','🎖️'];
@@ -2165,14 +1725,6 @@ renderCustomScenarios();
 </div>
 
 <script>
-async function doLogout() {
-  try {
-    await window.$memberstackDom.logout();
-  } catch(e) {}
-  sessionStorage.removeItem('ss_auth');
-  location.reload();
-}
-
 function openFeedback() {
   window.open('https://www.cognitoforms.com/SceneSounds1/SceneSoundsFeedback', '_blank');
 }
